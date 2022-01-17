@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':service')
+
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.19.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.2.19.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.19.RELEASE'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.4'
+}
