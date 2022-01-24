@@ -3,6 +3,7 @@ package com.esm.epam.controller;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
 import com.esm.epam.exception.ResourceNotFoundException;
+import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRDDao;
 import com.esm.epam.service.CRDService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addTag(@RequestBody Tag tag) {
+    public ResponseEntity<String> addTag(@RequestBody Tag tag) throws ServiceException {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

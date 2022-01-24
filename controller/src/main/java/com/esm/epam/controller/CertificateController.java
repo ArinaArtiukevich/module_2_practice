@@ -3,6 +3,7 @@ package com.esm.epam.controller;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
 import com.esm.epam.exception.ResourceNotFoundException;
+import com.esm.epam.exception.ServiceException;
 import com.esm.epam.service.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +26,6 @@ public class CertificateController {
 
     @Autowired
     public CRUDService<Certificate> certificateService;
-
 
     @GetMapping
     public ResponseEntity<List<Certificate>> getCertificateList(@RequestParam(required = false) MultiValueMap<String, Object> params) {
@@ -56,7 +56,7 @@ public class CertificateController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addCertificate(@RequestBody Certificate certificate) {
+    public ResponseEntity<String> addCertificate(@RequestBody Certificate certificate) throws ServiceException {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -65,7 +65,7 @@ public class CertificateController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<String> updateCustomer(@PathVariable("id") Long id, @RequestBody Certificate certificate) {
+    public ResponseEntity<String> updateCustomer(@PathVariable("id") Long id, @RequestBody Certificate certificate) throws ServiceException {
         HttpHeaders httpHeaders = new HttpHeaders();
         if (certificateService.update(certificate, id)) {
 

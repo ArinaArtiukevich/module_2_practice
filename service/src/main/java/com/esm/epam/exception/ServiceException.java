@@ -1,11 +1,10 @@
 package com.esm.epam.exception;
 
-import java.util.ResourceBundle;
 
-public class ResourceNotFoundException extends RuntimeException {
+public class ServiceException extends Exception {
     private String message;
 
-    public ResourceNotFoundException(String message) {
+    public ServiceException(String message) {
         this.message = message;
     }
 

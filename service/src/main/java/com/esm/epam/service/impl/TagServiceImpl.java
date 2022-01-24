@@ -1,8 +1,11 @@
 package com.esm.epam.service.impl;
 
+import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRDDao;
 import com.esm.epam.service.CRDService;
+import com.esm.epam.validator.ServiceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,8 @@ public class TagServiceImpl implements CRDService<Tag> {
 
     @Autowired
     private CRDDao<Tag> tagDao;
+    @Autowired
+    private ServiceValidator<Tag> validator;
 
     @Override
     public List<Tag> getAll() {
@@ -20,7 +25,8 @@ public class TagServiceImpl implements CRDService<Tag> {
     }
 
     @Override
-    public Long add(Tag tag) {
+    public Long add(Tag tag) throws ServiceException {
+        validator.validate(tag);
         return  tagDao.add(tag);
     }
 

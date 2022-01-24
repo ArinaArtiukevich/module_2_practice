@@ -1,6 +1,7 @@
 package com.esm.epam.service;
 
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.ServiceException;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface CRDService<T> {
         return getAll();
     }
 
-    Long add(T t);
+    Long add(T t) throws ServiceException;
 
     T getById(Long id);
 
