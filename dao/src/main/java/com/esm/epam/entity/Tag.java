@@ -2,6 +2,7 @@ package com.esm.epam.entity;
 
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Tag {
@@ -30,6 +31,11 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return new Tag(this.getId(), this.getName());
     }
 
     @Override

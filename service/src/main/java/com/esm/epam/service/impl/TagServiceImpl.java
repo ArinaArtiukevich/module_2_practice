@@ -1,41 +1,37 @@
 package com.esm.epam.service.impl;
 
 import com.esm.epam.entity.Tag;
-import com.esm.epam.repository.TagDao;
-import com.esm.epam.service.TagService;
+import com.esm.epam.repository.CRDDao;
+import com.esm.epam.service.CRDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TagServiceImpl implements TagService {
+public class TagServiceImpl implements CRDService<Tag> {
 
     @Autowired
-    private TagDao tagDao;
+    private CRDDao<Tag> tagDao;
 
     @Override
-    public List<Tag> getAllTags() {
-       return tagDao.getAllTags();
+    public List<Tag> getAll() {
+       return tagDao.getAll();
     }
 
     @Override
-    public Long addTag(Tag tag) {
-        return  tagDao.addTag(tag);
+    public Long add(Tag tag) {
+        return  tagDao.add(tag);
     }
 
     @Override
-    public Tag getTagById(Long id) {
-       return tagDao.getTagById(id);
+    public Tag getById(Long id) {
+       return tagDao.getById(id);
     }
 
     @Override
-    public void deleteTagById(Long id) {
-        tagDao.deleteTagById(id);
+    public boolean deleteById(Long id) {
+         return tagDao.deleteById(id);
     }
 
-    @Override
-    public void updateTag(Tag tag) {
-        tagDao.updateTag(tag);
-    }
 }

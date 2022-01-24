@@ -1,7 +1,5 @@
 package com.esm.epam.config;
 
-import com.esm.epam.repository.TagDao;
-import com.esm.epam.repository.impl.TagDaoImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
