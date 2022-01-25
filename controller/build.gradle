@@ -17,5 +17,5 @@ dependencies {
 
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
     implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.2.19.RELEASE'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.4'
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.2.19.RELEASE'
 }

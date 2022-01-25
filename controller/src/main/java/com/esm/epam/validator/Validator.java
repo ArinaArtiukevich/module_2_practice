@@ -10,21 +10,9 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 public class Validator {
-    public static void validateTagList(List<Tag> tags) {
-        if (isNull(tags) || tags.isEmpty()) {
-            throw new ResourceNotFoundException("Tag list is empty.");
-        }
-    }
-
-    public static void validateCertificateList(List<Certificate> certificates) {
-        if (isNull(certificates) || certificates.isEmpty()) {
-            throw new ResourceNotFoundException("Certificate list is empty.");
-        }
-    }
-
-    public static void validateEntity(Object t, Long idT) {
-        if (isNull(t)) {
-            throw new ResourceNotFoundException("Requested resource not found id = " + idT);
+    public static void validateId(Long idT) {
+        if (isNull(idT) || idT <= 0) {
+            throw new ResourceNotFoundException("Invalid id = " + idT);
         }
     }
 }

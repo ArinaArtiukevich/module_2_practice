@@ -31,22 +31,20 @@ public class TagController {
     @GetMapping
     public ResponseEntity<List<Tag>> getTagList() {
         List<Tag> tags = tagService.getAll();
-        validateTagList(tags);
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Tag> getTag(@PathVariable("id") Long id) {
+        validateId(id);
         Tag tag = tagService.getById(id);
-        validateEntity(tag, id);
         return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) {
-        if (!tagService.deleteById(id)) {
-            throw new ResourceNotFoundException("Requested resource not found id = " + id);
-        }
+    public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) throws ServiceException {
+        validateId(id);
+        tagService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

@@ -95,7 +95,8 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
     @Override
     public boolean deleteById(Long id) {
         boolean isDeleted = false;
-        int affectedRows = jdbcTemplate.update(DELETE_CERTIFICATE_BY_ID_QUERY, id, id);
+        jdbcTemplate.update(DELETE_CERTIFICATE_BY_ID_CERTIFICATES_TAGS_QUERY, id);
+        int affectedRows = jdbcTemplate.update(DELETE_CERTIFICATE_BY_ID_QUERY, id);
         if (affectedRows > 0) {
             isDeleted = true;
         }

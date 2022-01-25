@@ -4,6 +4,7 @@ import com.esm.epam.errorEntity.ErrorResponse;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,4 +31,9 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(org.springframework.dao.DuplicateKeyException.class)
+    public final ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(3, exception.getLocalizedMessage());
+        return new ResponseEntity<>(errorResponse, NOT_ACCEPTABLE);
+    }
 }

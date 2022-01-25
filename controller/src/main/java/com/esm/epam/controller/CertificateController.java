@@ -28,30 +28,28 @@ public class CertificateController {
     public CRUDService<Certificate> certificateService;
 
     @GetMapping
-    public ResponseEntity<List<Certificate>> getCertificateList(@RequestParam(required = false) MultiValueMap<String, Object> params) {
+    public ResponseEntity<List<Certificate>> getCertificateList(@RequestParam(required = false) MultiValueMap<String, Object> params) throws ServiceException {
         List<Certificate> certificates = new ArrayList<>();
         if (params.size() == 0) {
             certificates = certificateService.getAll();
         } else {
             certificates = certificateService.getFilteredList(params);
         }
-        validateCertificateList(certificates);
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Certificate> getCertificate(@PathVariable("id") Long id) {
+        validateId(id);
         Certificate certificate = certificateService.getById(id);
-        validateEntity(certificate, id);
         return new ResponseEntity<>(certificate, HttpStatus.OK);
     }
 
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCertificate(@PathVariable("id") Long id) {
-        if (!certificateService.deleteById(id)) {
-            throw new ResourceNotFoundException("Requested resource not found id = " + id);
-        }
+    public ResponseEntity<Void> deleteCertificate(@PathVariable("id") Long id) throws ServiceException {
+        validateId(id);
+        certificateService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -65,15 +63,13 @@ public class CertificateController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<String> updateCustomer(@PathVariable("id") Long id, @RequestBody Certificate certificate) throws ServiceException {
+    public ResponseEntity<String> updateCertificate(@PathVariable("id") Long id, @RequestBody Certificate certificate) throws ServiceException {
+        validateId(id);
         HttpHeaders httpHeaders = new HttpHeaders();
-        if (certificateService.update(certificate, id)) {
+        certificateService.update(certificate, id);
+        httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
+                .buildAndExpand(id).toUri().toString());
 
-            httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
-                    .buildAndExpand(id).toUri().toString());
-        } else {
-            throw new ResourceNotFoundException("Requested resource not found id = " + id);
-        }
         return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
     }
 }

@@ -40,8 +40,9 @@ public class ParameterAttribute {
                     "LEFT JOIN certificates_tags ON (gift_certificates.id=certificates_tags.certificate_id) \n" +
                     "LEFT JOIN tags ON(tags.tag_id = certificates_tags.tag_id)\n" +
                     "WHERE gift_certificates.id = ?\n",
-            DELETE_CERTIFICATE_BY_ID_QUERY = "DELETE FROM certificates_tags\n" +
-                    "    WHERE certificates_tags.certificate_id = ?;\n" +
+            DELETE_CERTIFICATE_BY_ID_CERTIFICATES_TAGS_QUERY = "DELETE FROM certificates_tags\n" +
+                    "    WHERE certificates_tags.certificate_id = ?;\n",
+            DELETE_CERTIFICATE_BY_ID_QUERY =
                     "    DELETE FROM gift_certificates\n" +
                     "    WHERE gift_certificates.id = ?;",
             ADD_CERTIFICATE_QUERY = "INSERT INTO gift_certificates(name, description, duration, creation_date, price) \n" +
@@ -52,7 +53,8 @@ public class ParameterAttribute {
             GET_ALL_TAGS_QUERY = "SELECT * FROM tags",
             GET_TAG_BY_ID_QUERY = "SELECT * FROM tags WHERE tags.tag_id = ?",
             ADD_TAG_QUERY = "INSERT INTO tags(tag_name) VALUES (?)",
-            DELETE_TAG_BY_ID_QUERY = "DELETE FROM certificates_tags WHERE certificates_tags.tag_id = ?;\n" + " DELETE FROM tags WHERE tags.tag_id = ?",
+            DELETE_TAG_BY_ID_QUERY = " DELETE FROM tags WHERE tags.tag_id = ?",
+            DELETE_TAG_BY_ID_CERTIFICATES_TAG_QUERY = "DELETE FROM certificates_tags WHERE certificates_tags.tag_id = ?;",
 
             BEGIN_GET_FILTERED_CERTIFICATE_LIST_QUERY = "SELECT * FROM gift_certificates \n" +
             "LEFT JOIN certificates_tags ON (gift_certificates.id=certificates_tags.certificate_id) \n" +

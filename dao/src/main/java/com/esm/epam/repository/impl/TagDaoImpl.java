@@ -58,7 +58,8 @@ public class TagDaoImpl implements CRDDao<Tag> {
     @Override
     public boolean deleteById(Long id) {
         boolean isDeleted = false;
-        int affectedRows = jdbcTemplate.update(DELETE_TAG_BY_ID_QUERY, id, id);
+        jdbcTemplate.update(DELETE_TAG_BY_ID_CERTIFICATES_TAG_QUERY, id);
+        int affectedRows = jdbcTemplate.update(DELETE_TAG_BY_ID_QUERY, id);
         if (affectedRows > 0) {
             isDeleted = true;
         }

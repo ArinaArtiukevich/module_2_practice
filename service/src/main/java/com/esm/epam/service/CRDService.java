@@ -9,7 +9,7 @@ import java.util.List;
 public interface CRDService<T> {
     List<T> getAll();
 
-    default List<T> getFilteredList(MultiValueMap<String, Object> params) {
+    default List<T> getFilteredList(MultiValueMap<String, Object> params) throws ServiceException {
         return getAll();
     }
 
@@ -17,5 +17,5 @@ public interface CRDService<T> {
 
     T getById(Long id);
 
-    boolean deleteById(Long id);
+    void deleteById(Long id) throws ServiceException;
 }
