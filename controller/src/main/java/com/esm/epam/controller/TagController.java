@@ -2,6 +2,7 @@ package com.esm.epam.controller;
 
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.ControllerException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRDDao;
@@ -29,20 +30,20 @@ public class TagController {
     public CRDService<Tag> tagService;
 
     @GetMapping
-    public ResponseEntity<List<Tag>> getTagList() {
+    public ResponseEntity<List<Tag>> getTagList() throws ResourceNotFoundException {
         List<Tag> tags = tagService.getAll();
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Tag> getTag(@PathVariable("id") Long id) {
+    public ResponseEntity<Tag> getTag(@PathVariable("id") Long id) throws ResourceNotFoundException, ControllerException {
         validateId(id);
         Tag tag = tagService.getById(id);
         return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) throws ServiceException {
+    public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) throws ServiceException, ControllerException {
         validateId(id);
         tagService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);

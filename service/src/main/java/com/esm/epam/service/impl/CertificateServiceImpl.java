@@ -5,20 +5,14 @@ import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRUDDao;
 import com.esm.epam.service.CRUDService;
+import com.esm.epam.util.CurrentDate;
 import com.esm.epam.validator.CertificateValidator;
-import com.esm.epam.validator.ServiceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.esm.epam.util.ParameterAttribute.*;
-import static java.util.Objects.nonNull;
 
 @Service
 public class CertificateServiceImpl implements CRUDService<Certificate> {
@@ -27,6 +21,8 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     private CRUDDao<Certificate> certificateDao;
     @Autowired
     private CertificateValidator validator;
+    @Autowired
+    private CurrentDate date;
 
     @Override
     public void update(Certificate certificate, Long idCertificate) throws ServiceException {
@@ -39,12 +35,12 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
         }
         validator.validateIntToBeUpdated(certificate.getDuration());
         validator.validateIntToBeUpdated(certificate.getPrice());
-        certificate.setLastUpdateDate(getCurrentDate());
+        certificate.setLastUpdateDate(date.getCurrentDate());
         certificateDao.update(certificate, idCertificate);
     }
 
     @Override
-    public List<Certificate> getAll() {
+    public List<Certificate> getAll() throws ResourceNotFoundException {
         List<Certificate> certificates = certificateDao.getAll();
         validator.validateList(certificates);
         return certificates;
@@ -53,12 +49,12 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     @Override
     public Long add(Certificate certificate) throws ServiceException {
         validator.validateEntityParameters(certificate);
-        certificate.setCreateDate(getCurrentDate());
+        certificate.setCreateDate(date.getCurrentDate());
         return certificateDao.add(certificate);
     }
 
     @Override
-    public Certificate getById(Long id) {
+    public Certificate getById(Long id) throws ResourceNotFoundException {
         Certificate certificate = certificateDao.getById(id);
         validator.validateEntity(certificate, id);
         return certificate;
@@ -73,17 +69,12 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     }
 
     @Override
-    public List<Certificate> getFilteredList(MultiValueMap<String, Object> params) throws ServiceException {
+    public List<Certificate> getFilteredList(MultiValueMap<String, Object> params) throws ServiceException, ResourceNotFoundException {
         validator.validateSortValues(params);
         List<Certificate> certificates = certificateDao.getFilteredList(params);
         validator.validateList(certificates);
         return certificates;
     }
 
-    private String getCurrentDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_PATTERN);
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
 
 }

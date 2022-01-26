@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -24,8 +25,8 @@ public class TagDaoImpl implements CRDDao<Tag> {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TagDaoImpl(@Qualifier("jdbcTemplate") JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public TagDaoImpl(@Qualifier("dataSource")DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override

@@ -22,14 +22,14 @@ public class ServiceTagValidatorImpl implements ServiceValidator<Tag> {
     }
 
     @Override
-    public void validateEntity(Tag tag, Long id) {
+    public void validateEntity(Tag tag, Long id) throws ResourceNotFoundException {
         if (isNull(tag)) {
             throw new ResourceNotFoundException("Requested tag resource not found id = " + id);
         }
     }
 
     @Override
-    public void validateList(List<Tag> tags) {
+    public void validateList(List<Tag> tags) throws ResourceNotFoundException {
         if (isNull(tags) || tags.isEmpty()) {
             throw new ResourceNotFoundException("Tag list is empty.");
         }

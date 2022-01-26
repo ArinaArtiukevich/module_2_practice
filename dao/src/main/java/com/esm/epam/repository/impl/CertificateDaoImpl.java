@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
 
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -27,15 +28,13 @@ import static java.util.Objects.*;
 @Repository
 public class CertificateDaoImpl implements CRUDDao<Certificate> {
 
-    @Autowired
-    @Qualifier("certificateQueryBuilder")
     private QueryBuilder<Certificate> queryBuilder;
-
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public CertificateDaoImpl(@Qualifier("jdbcTemplate") JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public CertificateDaoImpl(@Qualifier("dataSource")DataSource dataSource, QueryBuilder<Certificate> queryBuilder) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.queryBuilder = queryBuilder;
     }
 
     @Override

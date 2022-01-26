@@ -27,6 +27,35 @@ public class Certificate {
         this.tags = tags;
     }
 
+    public Certificate(Long id, String name, String description, Integer price, Integer duration, String createDate, List<Tag> tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.createDate = createDate;
+        this.tags = tags;
+    }
+
+    public Certificate(Long id, String name, String description, Integer price, Integer duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+    }
+
+    public Certificate(String name, List<Tag> tags) {
+        this.name = name;
+        this.tags = tags;
+    }
+
+    public Certificate(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+
     public Long getId() {
         return id;
     }

@@ -21,7 +21,7 @@ public class TagServiceImpl implements CRDService<Tag> {
     private ServiceValidator<Tag> validator;
 
     @Override
-    public List<Tag> getAll() {
+    public List<Tag> getAll() throws ResourceNotFoundException {
        List<Tag> tags = tagDao.getAll();
        validator.validateList(tags);
        return tags;
@@ -30,11 +30,11 @@ public class TagServiceImpl implements CRDService<Tag> {
     @Override
     public Long add(Tag tag) throws ServiceException {
         validator.validateEntityParameters(tag);
-        return  tagDao.add(tag);
+        return tagDao.add(tag);
     }
 
     @Override
-    public Tag getById(Long id) {
+    public Tag getById(Long id) throws ResourceNotFoundException {
        Tag tag = tagDao.getById(id);
        validator.validateEntity(tag, id);
        return tag;
@@ -46,5 +46,4 @@ public class TagServiceImpl implements CRDService<Tag> {
             throw new ServiceException("Requested resource not found id = " + id);
         }
     }
-
 }

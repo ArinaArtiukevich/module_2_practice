@@ -16,12 +16,7 @@ import static com.esm.epam.util.ParameterAttribute.*;
 @ComponentScan(basePackages = {"com.esm.epam.repository.impl"})
 public class DataBaseConfiguration {
     @Bean
-    @Qualifier(value = "jdbcTemplate")
-    public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
-    }
-
-    @Bean
+    @Qualifier(value = "dataSource")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(DATABASE_URL);

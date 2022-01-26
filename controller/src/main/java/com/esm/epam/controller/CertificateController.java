@@ -2,6 +2,7 @@ package com.esm.epam.controller;
 
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.ControllerException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import com.esm.epam.service.CRUDService;
@@ -28,7 +29,7 @@ public class CertificateController {
     public CRUDService<Certificate> certificateService;
 
     @GetMapping
-    public ResponseEntity<List<Certificate>> getCertificateList(@RequestParam(required = false) MultiValueMap<String, Object> params) throws ServiceException {
+    public ResponseEntity<List<Certificate>> getCertificateList(@RequestParam(required = false) MultiValueMap<String, Object> params) throws ServiceException, ResourceNotFoundException {
         List<Certificate> certificates = new ArrayList<>();
         if (params.size() == 0) {
             certificates = certificateService.getAll();
@@ -39,7 +40,7 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Certificate> getCertificate(@PathVariable("id") Long id) {
+    public ResponseEntity<Certificate> getCertificate(@PathVariable("id") Long id) throws ResourceNotFoundException, ControllerException {
         validateId(id);
         Certificate certificate = certificateService.getById(id);
         return new ResponseEntity<>(certificate, HttpStatus.OK);
@@ -47,7 +48,7 @@ public class CertificateController {
 
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCertificate(@PathVariable("id") Long id) throws ServiceException {
+    public ResponseEntity<Void> deleteCertificate(@PathVariable("id") Long id) throws ServiceException, ControllerException {
         validateId(id);
         certificateService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -63,7 +64,7 @@ public class CertificateController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<String> updateCertificate(@PathVariable("id") Long id, @RequestBody Certificate certificate) throws ServiceException {
+    public ResponseEntity<String> updateCertificate(@PathVariable("id") Long id, @RequestBody Certificate certificate) throws ServiceException, ControllerException {
         validateId(id);
         HttpHeaders httpHeaders = new HttpHeaders();
         certificateService.update(certificate, id);

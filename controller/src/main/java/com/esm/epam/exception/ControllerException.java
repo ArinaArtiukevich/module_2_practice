@@ -1,11 +1,9 @@
 package com.esm.epam.exception;
 
-import java.util.ResourceBundle;
-
-public class ResourceNotFoundException extends Exception {
+public class ControllerException extends Exception {
     private String message;
 
-    public ResourceNotFoundException(String message) {
+    public ControllerException(String message) {
         this.message = message;
     }
 

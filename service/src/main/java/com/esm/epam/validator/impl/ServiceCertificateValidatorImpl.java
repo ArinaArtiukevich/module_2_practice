@@ -20,7 +20,7 @@ import static java.util.Objects.nonNull;
 @Component
 public class ServiceCertificateValidatorImpl implements CertificateValidator {
     @Override
-    public void validateEntity(Certificate certificate, Long id) {
+    public void validateEntity(Certificate certificate, Long id) throws ResourceNotFoundException {
         if (isNull(certificate)) {
             throw new ResourceNotFoundException("Requested certificate resource not found id = " + id);
         }
@@ -52,7 +52,7 @@ public class ServiceCertificateValidatorImpl implements CertificateValidator {
     }
 
     @Override
-    public void validateList(List<Certificate> certificates) {
+    public void validateList(List<Certificate> certificates) throws ResourceNotFoundException {
         if (isNull(certificates) || certificates.isEmpty()) {
             throw new ResourceNotFoundException("Certificate list is empty.");
         }
