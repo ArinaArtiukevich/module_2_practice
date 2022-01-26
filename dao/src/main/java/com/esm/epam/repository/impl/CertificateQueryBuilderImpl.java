@@ -55,7 +55,7 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
                     break;
             }
         }
-        if(orderByQuery.length() == 0){
+        if (orderByQuery.length() == 0) {
             orderByQuery = orderByQuery + ORDER_BY_STATEMENT + CERTIFICATE_TABLE + "." + CERTIFICATE_ID;
         }
 
@@ -125,7 +125,7 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
 
     private String prepareOrderStatement(String orderByStatement) {
         if (orderByStatement.length() == 0) {
-            orderByStatement = ORDER_BY_STATEMENT ;
+            orderByStatement = ORDER_BY_STATEMENT;
         } else {
             orderByStatement = orderByStatement + " , ";
         }

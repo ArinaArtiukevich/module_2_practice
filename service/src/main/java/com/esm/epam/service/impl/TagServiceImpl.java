@@ -22,9 +22,9 @@ public class TagServiceImpl implements CRDService<Tag> {
 
     @Override
     public List<Tag> getAll() throws ResourceNotFoundException {
-       List<Tag> tags = tagDao.getAll();
-       validator.validateList(tags);
-       return tags;
+        List<Tag> tags = tagDao.getAll();
+        validator.validateList(tags);
+        return tags;
     }
 
     @Override
@@ -35,9 +35,9 @@ public class TagServiceImpl implements CRDService<Tag> {
 
     @Override
     public Tag getById(Long id) throws ResourceNotFoundException {
-       Tag tag = tagDao.getById(id);
-       validator.validateEntity(tag, id);
-       return tag;
+        Tag tag = tagDao.getById(id);
+        validator.validateEntity(tag, id);
+        return tag;
     }
 
     @Override

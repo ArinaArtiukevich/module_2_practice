@@ -32,7 +32,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public CertificateDaoImpl(@Qualifier("dataSource")DataSource dataSource, QueryBuilder<Certificate> queryBuilder) {
+    public CertificateDaoImpl(@Qualifier("dataSource") DataSource dataSource, QueryBuilder<Certificate> queryBuilder) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.queryBuilder = queryBuilder;
     }

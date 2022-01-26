@@ -25,7 +25,7 @@ public class TagDaoImpl implements CRDDao<Tag> {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TagDaoImpl(@Qualifier("dataSource")DataSource dataSource) {
+    public TagDaoImpl(@Qualifier("dataSource") DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CertificateQueryBuilderImplTest {
 
     private QueryBuilder<Certificate> queryBuilder = new CertificateQueryBuilderImpl();
+
     @Test
     void getUpdateQuery() {
         Certificate certificateWithFieldsToBeUpdated =

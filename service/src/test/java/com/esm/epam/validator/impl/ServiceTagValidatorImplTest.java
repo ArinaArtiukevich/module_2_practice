@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ServiceTagValidatorImplTest {
 
     private ServiceTagValidatorImpl tagValidator = new ServiceTagValidatorImpl();
-    private Tag tag =  new Tag(1L, "tag_winter");
+    private Tag tag = new Tag(1L, "tag_winter");
 
     @Test
     void validateEntityParameters_serviceException() {
