@@ -22,7 +22,7 @@ import static com.esm.epam.validator.Validator.*;
 import static java.util.Objects.isNull;
 
 @RestController
-@RequestMapping(value = "/certificates")
+@RequestMapping("/certificates")
 public class CertificateController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class CertificateController {
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Certificate> getCertificate(@PathVariable("id") Long id) throws ResourceNotFoundException, ControllerException {
         validateId(id);
         Certificate certificate = certificateService.getById(id);
@@ -47,7 +47,7 @@ public class CertificateController {
     }
 
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCertificate(@PathVariable("id") Long id) throws ServiceException, ControllerException {
         validateId(id);
         certificateService.deleteById(id);
@@ -63,7 +63,7 @@ public class CertificateController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> updateCertificate(@PathVariable("id") Long id, @RequestBody Certificate certificate) throws ServiceException, ControllerException {
         validateId(id);
         HttpHeaders httpHeaders = new HttpHeaders();

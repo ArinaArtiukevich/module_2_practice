@@ -23,7 +23,7 @@ import static com.esm.epam.validator.Validator.*;
 import static java.util.Objects.isNull;
 
 @RestController
-@RequestMapping(value = "/tags")
+@RequestMapping("/tags")
 public class TagController {
 
     @Autowired
@@ -35,14 +35,14 @@ public class TagController {
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Tag> getTag(@PathVariable("id") Long id) throws ResourceNotFoundException, ControllerException {
         validateId(id);
         Tag tag = tagService.getById(id);
         return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) throws ServiceException, ControllerException {
         validateId(id);
         tagService.deleteById(id);
