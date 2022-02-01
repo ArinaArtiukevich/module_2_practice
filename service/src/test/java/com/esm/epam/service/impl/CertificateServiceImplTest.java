@@ -3,9 +3,7 @@ package com.esm.epam.service.impl;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
-import com.esm.epam.repository.QueryBuilder;
 import com.esm.epam.repository.impl.CertificateDaoImpl;
-import com.esm.epam.repository.impl.CertificateQueryBuilderImpl;
 import com.esm.epam.util.CurrentDate;
 import com.esm.epam.validator.impl.ServiceCertificateValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +24,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -48,12 +46,46 @@ class CertificateServiceImplTest {
 
     private Long invalidId = -1L;
     private Long newId = 5L;
-    private Certificate certificateWithFieldsToBeUpdated = new Certificate("football", "playing football");
-    private Certificate newCertificate = new Certificate(null, "tennis", "playing tennis", 30, 204);
-    private Certificate certificate = new Certificate(1L, "skiiing", "skiing in alps", 100, 200);
-    private List<Certificate> certificates = Arrays.asList(new Certificate(2L, "snowboarding", "snowboarding school", 1440, 12),
-            new Certificate(3L, "sneakers", "clothing and presents", 200, 1),
-            new Certificate(4L, "hockey", "sport", 120, 62)
+    private Certificate certificateWithFieldsToBeUpdated = Certificate.builder()
+            .name("football")
+            .description("playing football")
+            .build();
+    private Certificate newCertificate = Certificate.builder()
+            .id(null)
+            .name("tennis")
+            .description("playing tennis")
+            .price(204)
+            .duration(30)
+            .build();
+    private Certificate certificate = Certificate.builder()
+            .id(1L)
+            .name("skiing")
+            .description("skiing in alps")
+            .price(200)
+            .duration(100)
+            .build();
+
+    private List<Certificate> certificates = Arrays.asList(Certificate.builder()
+                    .id(2L)
+                    .name("snowboarding")
+                    .description("snowboarding school")
+                    .price(1440)
+                    .duration(12)
+                    .build(),
+            Certificate.builder()
+                    .id(3L)
+                    .name("sneakers")
+                    .description("clothing and presents")
+                    .price(200)
+                    .duration(1)
+                    .build(),
+            Certificate.builder()
+                    .id(4L)
+                    .name("hockey")
+                    .description("sport")
+                    .price(120)
+                    .duration(62)
+                    .build()
     );
 
     @BeforeEach
@@ -64,7 +96,12 @@ class CertificateServiceImplTest {
 
     @Test
     void testUpdate_positive() throws ServiceException {
-        Certificate expectedCertificate = new Certificate(1L, "football", "playing football", 100, 200);
+        Certificate expectedCertificate = Certificate.builder().id(1L)
+                .name("football")
+                .description("playing football")
+                .price(200)
+                .duration(100)
+                .build();
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 certificate.setName("football");

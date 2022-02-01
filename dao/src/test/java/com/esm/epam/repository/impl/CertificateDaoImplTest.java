@@ -6,17 +6,11 @@ import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
 import com.esm.epam.repository.QueryBuilder;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,8 +26,24 @@ class CertificateDaoImplTest {
     private Tag tag_relax = new Tag(2L, "tag_relax");
     private Tag tag_snow = new Tag(3L, "tag_snow");
     private List<Certificate> certificates = new ArrayList<>(Arrays.asList(
-            new Certificate(1L, "skiing", "skiing school", 1000, 12, "2022-01-24T15:35:04.072", Arrays.asList(tag_winter, tag_snow)),
-            new Certificate(2L, "massage", "massage center", 100, 2, "2022-01-24T15:36:18.987", Arrays.asList(tag_winter, tag_relax))
+            Certificate.builder()
+                    .id(1L)
+                    .name("skiing")
+                    .description("skiing school")
+                    .duration(12)
+                    .price(1000)
+                    .createDate("2022-01-24T15:35:04.072")
+                    .tags(Arrays.asList(tag_winter, tag_snow))
+                    .build(),
+            Certificate.builder()
+                    .id(2L)
+                    .name("massage")
+                    .description("massage center")
+                    .duration(2)
+                    .price(100)
+                    .createDate("2022-01-24T15:36:18.987")
+                    .tags(Arrays.asList(tag_winter, tag_relax))
+                    .build()
     ));
 
     @Test
@@ -77,9 +87,22 @@ class CertificateDaoImplTest {
 
     @Test
     void testUpdate() {
-        Certificate certificateWithFieldsToBeUpdated =
-                new Certificate("snowboarding", Arrays.asList(tag_relax));
-        Certificate expectedCertificate = new Certificate(1L, "snowboarding", "skiing school", 1000, 12, "2022-01-24T15:35:04.072", Arrays.asList(tag_winter, tag_snow, tag_relax));
+        Certificate certificateWithFieldsToBeUpdated = Certificate.builder()
+                .name("snowboarding")
+                .tags(Arrays.asList(tag_relax))
+                .build();
+
+        Certificate expectedCertificate =
+                Certificate.builder()
+                        .id(1L)
+                        .name("snowboarding")
+                        .description("skiing school")
+                        .duration(12)
+                        .price(1000)
+                        .createDate("2022-01-24T15:35:04.072")
+                        .tags(Arrays.asList(tag_winter, tag_snow, tag_relax))
+                        .build();
+
         certificateDao.update(certificateWithFieldsToBeUpdated, 1L);
         Certificate actualCertificate = certificateDao.getById(1L);
         assertEquals(expectedCertificate, actualCertificate);

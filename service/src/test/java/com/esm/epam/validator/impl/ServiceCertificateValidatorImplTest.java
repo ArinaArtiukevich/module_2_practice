@@ -12,7 +12,13 @@ import java.util.Arrays;
 class ServiceCertificateValidatorImplTest {
 
     private ServiceCertificateValidatorImpl certificateValidator = new ServiceCertificateValidatorImpl();
-    private Certificate certificate = new Certificate(1L, "skiiing", "skiing in alps", 100, 200);
+    private Certificate certificate = Certificate.builder()
+            .id(1L)
+            .name("skiiing")
+            .description("skiing in alps")
+            .price(100)
+            .duration(200)
+            .build();
 
     @Test
     void testValidateEntity_resourceNotFoundException() {
@@ -29,7 +35,14 @@ class ServiceCertificateValidatorImplTest {
     @Test
     void validateEntityParameters_serviceException() {
         Assertions.assertThrows(ServiceException.class, () -> {
-            certificateValidator.validateEntityParameters(new Certificate(1L, null, "skiing in alps", 100, 200));
+            certificateValidator.validateEntityParameters(
+                    Certificate.builder()
+                            .id(1L)
+                            .name(null)
+                            .description("skiing in alps")
+                            .price(100)
+                            .duration(200)
+                            .build());
         });
     }
 

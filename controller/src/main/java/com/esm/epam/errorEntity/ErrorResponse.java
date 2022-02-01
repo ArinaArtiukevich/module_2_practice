@@ -1,19 +1,12 @@
 package com.esm.epam.errorEntity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class ErrorResponse {
     private int code;
     private String message;
 
-    public ErrorResponse(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

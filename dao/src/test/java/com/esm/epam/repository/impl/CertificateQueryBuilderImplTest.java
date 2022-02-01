@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CertificateQueryBuilderImplTest {
 
@@ -17,7 +15,10 @@ class CertificateQueryBuilderImplTest {
     @Test
     void getUpdateQuery() {
         Certificate certificateWithFieldsToBeUpdated =
-                new Certificate("snowboarding", "snowboarding school");
+                Certificate.builder()
+                        .name("snowboarding")
+                        .description("snowboarding school")
+                        .build();
         String expectedQuery = "UPDATE gift_certificates SET name = 'snowboarding', description = 'snowboarding school' WHERE gift_certificates.id = 1";
         String actualQuery = queryBuilder.getUpdateQuery(certificateWithFieldsToBeUpdated, 1L);
         assertEquals(expectedQuery, actualQuery);

@@ -1,15 +1,10 @@
 package com.esm.epam.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
+@Getter
 public class ServiceException extends Exception {
     private String message;
-
-    public ServiceException(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
 }

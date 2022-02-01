@@ -3,18 +3,11 @@ package com.esm.epam.validator.impl;
 import com.esm.epam.entity.Tag;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
-import com.esm.epam.service.impl.TagServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ServiceTagValidatorImplTest {
 
@@ -22,8 +15,8 @@ class ServiceTagValidatorImplTest {
     private Tag tag = new Tag(1L, "tag_winter");
 
     @Test
-    void validateEntityParameters_serviceException() {
-        Assertions.assertThrows(ServiceException.class, () -> {
+    void validateEntityParameters_nullPointer() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
             tagValidator.validateEntityParameters(new Tag(1L, null));
         });
     }
