@@ -1,12 +1,12 @@
 package com.esm.epam.entity;
 
-import org.springframework.context.annotation.Bean;
-
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class Tag {
     private Long id;
+
+    @NotBlank(message = "Tag name should not be empty.")
     private String name;
 
     public Tag() {

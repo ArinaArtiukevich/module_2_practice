@@ -6,7 +6,7 @@ import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRUDDao;
 import com.esm.epam.service.CRUDService;
 import com.esm.epam.util.CurrentDate;
-import com.esm.epam.validator.CertificateValidator;
+import com.esm.epam.validator.ServiceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -20,7 +20,7 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     @Autowired
     private CRUDDao<Certificate> certificateDao;
     @Autowired
-    private CertificateValidator validator;
+    private ServiceValidator<Certificate> validator;
     @Autowired
     private CurrentDate date;
 
@@ -33,8 +33,6 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
         if (!certificatesId.contains(idCertificate)) {
             throw new ServiceException("Requested resource not found id = " + idCertificate);
         }
-        validator.validateIntToBeUpdated(certificate.getDuration());
-        validator.validateIntToBeUpdated(certificate.getPrice());
         certificate.setLastUpdateDate(date.getCurrentDate());
         certificateDao.update(certificate, idCertificate);
     }
@@ -47,8 +45,7 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     }
 
     @Override
-    public Long add(Certificate certificate) throws ServiceException {
-        validator.validateEntityParameters(certificate);
+    public Long add(Certificate certificate) {
         certificate.setCreateDate(date.getCurrentDate());
         return certificateDao.add(certificate);
     }
@@ -69,8 +66,7 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     }
 
     @Override
-    public List<Certificate> getFilteredList(MultiValueMap<String, Object> params) throws ServiceException, ResourceNotFoundException {
-        validator.validateSortValues(params);
+    public List<Certificate> getFilteredList(MultiValueMap<String, Object> params) throws ResourceNotFoundException {
         List<Certificate> certificates = certificateDao.getFilteredList(params);
         validator.validateList(certificates);
         return certificates;

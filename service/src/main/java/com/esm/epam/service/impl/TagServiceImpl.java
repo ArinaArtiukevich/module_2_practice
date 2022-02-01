@@ -1,6 +1,5 @@
 package com.esm.epam.service.impl;
 
-import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
@@ -28,8 +27,7 @@ public class TagServiceImpl implements CRDService<Tag> {
     }
 
     @Override
-    public Long add(Tag tag) throws ServiceException {
-        validator.validateEntityParameters(tag);
+    public Long add(Tag tag) {
         return tagDao.add(tag);
     }
 

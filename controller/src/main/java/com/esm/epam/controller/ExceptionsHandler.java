@@ -4,15 +4,13 @@ import com.esm.epam.errorEntity.ErrorResponse;
 import com.esm.epam.exception.ControllerException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.validation.ConstraintViolationException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -38,9 +36,16 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public final ResponseEntity<ErrorResponse> handleControllerException(ConstraintViolationException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(4, exception.getMessage());
+        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
+    }
+
     @ExceptionHandler(ControllerException.class)
-    public final ResponseEntity<ErrorResponse> handleControllerException(ControllerException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(4, exception.getLocalizedMessage());
+    public final ResponseEntity<ErrorResponse> handleServiceException(ControllerException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(5, exception.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, NOT_ACCEPTABLE);
     }
+
 }

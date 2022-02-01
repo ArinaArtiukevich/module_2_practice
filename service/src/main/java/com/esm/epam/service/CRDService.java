@@ -1,6 +1,5 @@
 package com.esm.epam.service;
 
-import com.esm.epam.entity.Tag;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import org.springframework.util.MultiValueMap;
@@ -26,7 +25,7 @@ public interface CRDService<T> {
      *               key and {@link Object} as value
      * @return List with sorted values
      */
-    default List<T> getFilteredList(MultiValueMap<String, Object> params) throws ServiceException, ResourceNotFoundException {
+    default List<T> getFilteredList(MultiValueMap<String, Object> params) throws ResourceNotFoundException {
         return getAll();
     }
 
@@ -36,7 +35,7 @@ public interface CRDService<T> {
      * @param t the type of element to be added
      * @return id of added element
      */
-    Long add(T t) throws ServiceException;
+    Long add(T t);
 
     /**
      * finds element by id
