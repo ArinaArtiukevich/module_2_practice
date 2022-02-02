@@ -52,12 +52,13 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
     }
 
     @Override
-    public void update(Certificate certificate, Long idCertificate) {
+    public Certificate update(Certificate certificate, Long idCertificate) {
         String updateCertificateQuery = queryBuilder.getUpdateQuery(certificate, idCertificate);
         jdbcTemplate.update(updateCertificateQuery);
 
         List<Tag> tags = certificate.getTags();
         updateCertificateTags(idCertificate, tags);
+        return getById(idCertificate);
     }
 
     @Override

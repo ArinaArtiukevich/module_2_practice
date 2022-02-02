@@ -9,6 +9,6 @@ public interface CRUDService<T> extends CRDService<T> {
      * @param t   is element with fields to be updated
      * @param idT of element to be updated
      */
-    void update(T t, Long idT) throws ServiceException;
+    T update(T t, Long idT) throws ServiceException;
 
 }

@@ -25,7 +25,7 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     private CurrentDate date;
 
     @Override
-    public void update(Certificate certificate, Long idCertificate) throws ServiceException {
+    public Certificate update(Certificate certificate, Long idCertificate) throws ServiceException {
         List<Certificate> certificates = certificateDao.getAll();
         List<Long> certificatesId = certificates.stream()
                 .map(Certificate::getId)
@@ -34,7 +34,7 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
             throw new ServiceException("Requested resource not found id = " + idCertificate);
         }
         certificate.setLastUpdateDate(date.getCurrentDate());
-        certificateDao.update(certificate, idCertificate);
+        return certificateDao.update(certificate, idCertificate);
     }
 
     @Override

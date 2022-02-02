@@ -7,5 +7,5 @@ public interface CRUDDao<T> extends CRDDao<T> {
      * @param t is element with fields to be updated
      * @param idT of element to be updated
      */
-    void update(T t, Long idT);
+    T update(T t, Long idT);
 }

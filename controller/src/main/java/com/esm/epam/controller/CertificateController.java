@@ -67,15 +67,10 @@ public class CertificateController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> updateCertificate(@PathVariable("id") @Min(1L) Long id, @RequestBody Certificate certificate) throws ServiceException, ControllerException {
+    public ResponseEntity<Certificate> updateCertificate(@PathVariable("id") @Min(1L) Long id, @RequestBody Certificate certificate) throws ServiceException, ControllerException {
         validateIntToBeUpdated(certificate.getDuration());
         validateIntToBeUpdated(certificate.getPrice());
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        certificateService.update(certificate, id);
-        httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
-                .buildAndExpand(id).toUri().toString());
-
-        return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
+        Certificate certificateUpdated = certificateService.update(certificate, id);
+        return new ResponseEntity<>(certificateUpdated, HttpStatus.OK);
     }
 }
