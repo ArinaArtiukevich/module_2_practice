@@ -4,7 +4,6 @@ import com.esm.epam.entity.ErrorResponse;
 import com.esm.epam.exception.ControllerException;
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,33 +24,27 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
-    @ExceptionHandler(ServiceException.class)
-    public final ResponseEntity<ErrorResponse> handleServiceException(ServiceException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(2, exception.getLocalizedMessage());
-        return new ResponseEntity<>(errorResponse, NOT_ACCEPTABLE);
-    }
-
     @ExceptionHandler(org.springframework.dao.DuplicateKeyException.class)
     public final ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(3, exception.getLocalizedMessage());
+        ErrorResponse errorResponse = new ErrorResponse(2, exception.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public final ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(4, exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(3, exception.getMessage());
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(ControllerException.class)
     public final ResponseEntity<ErrorResponse> handleControllerException(ControllerException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(5, exception.getLocalizedMessage());
+        ErrorResponse errorResponse = new ErrorResponse(4, exception.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(DaoException.class)
     public final ResponseEntity<ErrorResponse> handleDaoException(DaoException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(6, exception.getLocalizedMessage());
+        ErrorResponse errorResponse = new ErrorResponse(5, exception.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, EXPECTATION_FAILED);
     }
 }

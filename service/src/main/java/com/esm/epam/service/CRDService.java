@@ -2,7 +2,6 @@ package com.esm.epam.service;
 
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public interface CRDService<T> {
      * @param t the type of element to be added
      * @return id of added element
      */
-    Long add(T t) throws ServiceException, DaoException;
+    Long add(T t) throws DaoException;
 
     /**
      * finds element by id
@@ -51,5 +50,5 @@ public interface CRDService<T> {
      *
      * @param id is required element id
      */
-    void deleteById(Long id) throws ResourceNotFoundException, ServiceException;
+    boolean deleteById(Long id) throws ResourceNotFoundException;
 }

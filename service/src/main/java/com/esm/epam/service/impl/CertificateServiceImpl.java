@@ -3,7 +3,6 @@ package com.esm.epam.service.impl;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRUDDao;
 import com.esm.epam.service.CRUDService;
 import com.esm.epam.util.CurrentDate;
@@ -63,11 +62,8 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     }
 
     @Override
-    public void deleteById(Long id) throws ServiceException {
-        if (!certificateDao.deleteById(id)) {
-            throw new ServiceException("Requested resource not found id = " + id);
-        }
-
+    public boolean deleteById(Long id) {
+        return certificateDao.deleteById(id);
     }
 
     @Override

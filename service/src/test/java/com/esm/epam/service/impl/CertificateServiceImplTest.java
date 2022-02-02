@@ -3,7 +3,6 @@ package com.esm.epam.service.impl;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.impl.CertificateDaoImpl;
 import com.esm.epam.util.CurrentDate;
 import com.esm.epam.validator.impl.ServiceCertificateValidatorImpl;
@@ -27,7 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(locations = "classpath:testSpringDispetcher-servlet.xml")
 @ExtendWith(SpringExtension.class)
@@ -128,7 +128,7 @@ class CertificateServiceImplTest {
 
 
     @Test
-    public void testAdd_positive() throws ServiceException, DaoException {
+    public void testAdd_positive() throws DaoException {
         when(certificateDao.add(newCertificate)).thenReturn(newId);
         Long actualId = certificateService.add(newCertificate);
         assertEquals(newId, actualId);
@@ -143,7 +143,7 @@ class CertificateServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_positive() throws ServiceException {
+    public void testDeleteById_positive() {
         when(certificateDao.deleteById(2L)).thenReturn(true);
         certificateService.deleteById(certificates.get(0).getId());
         Mockito.verify(certificateDao).deleteById(certificates.get(0).getId());
@@ -151,23 +151,17 @@ class CertificateServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_serviceException() {
-        ServiceException serviceException = new ServiceException("Requested resource not found id = " + invalidId);
+    public void testDeleteById() {
+        boolean expectedResult = false;
         when(certificateDao.deleteById(invalidId)).thenReturn(false);
-        Boolean actualResult = certificateDao.deleteById(invalidId);
-        ServiceException actual = null;
-        try {
-            certificateService.deleteById(invalidId);
-        } catch (ServiceException e) {
-            actual = e;
-        }
-        assertEquals(serviceException.getMessage(), actual.getMessage());
-        assertEquals(false, actualResult);
+        Boolean actualResult = certificateService.deleteById(invalidId);
+
+        assertEquals(expectedResult, actualResult);
 
     }
 
     @Test
-    void testGetFilteredList_filterByPartName() throws ResourceNotFoundException, ServiceException {
+    void testGetFilteredList_filterByPartName() throws ResourceNotFoundException {
         String partName = "ing";
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("name", partName);

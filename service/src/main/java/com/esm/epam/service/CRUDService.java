@@ -2,7 +2,6 @@ package com.esm.epam.service;
 
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 
 public interface CRUDService<T> extends CRDService<T> {
     /**
@@ -11,6 +10,6 @@ public interface CRUDService<T> extends CRDService<T> {
      * @param t   is element with fields to be updated
      * @param idT of element to be updated
      */
-    T update(T t, Long idT) throws ServiceException, ResourceNotFoundException, DaoException;
+    T update(T t, Long idT) throws ResourceNotFoundException, DaoException;
 
 }

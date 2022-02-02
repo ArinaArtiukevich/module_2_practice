@@ -77,18 +77,11 @@ class TagServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_serviceException() {
-        ResourceNotFoundException resourceNotFoundException = new ResourceNotFoundException("Requested resource not found id = " + invalidTagId);
+    public void testDeleteById() {
+        boolean expectedResult = false;
         when(tagDao.deleteById(invalidTagId)).thenReturn(false);
-        Boolean actualResult = tagDao.deleteById(tagId);
-        ResourceNotFoundException actual = null;
-        try {
-            tagService.deleteById(invalidTagId);
-        } catch (ResourceNotFoundException e) {
-            actual = e;
-        }
-        assertEquals(resourceNotFoundException.getMessage(), actual.getMessage());
-        assertEquals(false, actualResult);
+        Boolean actualResult = tagService.deleteById(invalidTagId);
+        assertEquals(expectedResult, actualResult);
 
     }
 }

@@ -42,9 +42,7 @@ public class TagServiceImpl implements CRDService<Tag> {
     }
 
     @Override
-    public void deleteById(Long id) throws ResourceNotFoundException {
-        if (!tagDao.deleteById(id)) {
-            throw new ResourceNotFoundException("Requested resource not found id = " + id);
-        }
+    public boolean deleteById(Long id) {
+        return tagDao.deleteById(id);
     }
 }
