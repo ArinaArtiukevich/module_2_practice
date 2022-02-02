@@ -50,23 +50,20 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
     }
 
     @Override
-    public Certificate update(Certificate certificate, Long idCertificate) throws DaoException {
+    public Optional<Certificate> update(Certificate certificate, Long idCertificate) throws DaoException {
         String updateCertificateQuery = queryBuilder.getUpdateQuery(certificate, idCertificate);
         jdbcTemplate.update(updateCertificateQuery);
 
         List<Tag> tags = certificate.getTags();
         updateCertificateTags(idCertificate, tags);
-        Optional<Certificate> updatedCertificate = getById(idCertificate);
-        if (!updatedCertificate.isPresent()) {
-            throw new DaoException("Can not find updated certificate");
-        }
-        return updatedCertificate.get();
+        return getById(idCertificate);
     }
 
     @Override
-    public Long add(Certificate certificate) throws DaoException {
+    public Optional<Certificate> add(Certificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        Optional<Long> idAddedObject = Optional.empty();
+        Optional<Certificate> addedCertificate = Optional.empty();
+        long idCertificate;
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(ADD_CERTIFICATE_QUERY, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, certificate.getName());
@@ -79,26 +76,25 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
 
         Optional<Map<String, Object>> keys = Optional.ofNullable(keyHolder.getKeys());
         if (keys.isPresent()) {
-            idAddedObject = Optional.of((long) keys.get().get(CERTIFICATE_ID));
-        } else {
-            throw new DaoException("Certificate was not added");
+            idCertificate = (long) keys.get().get(CERTIFICATE_ID);
+            List<Tag> tags = certificate.getTags();
+            updateCertificateTags(idCertificate, tags);
+            addedCertificate = getById(idCertificate);
         }
-        Long idCertificate = idAddedObject.get();
-        List<Tag> tags = certificate.getTags();
-        updateCertificateTags(idCertificate, tags);
-        return idCertificate;
+        return addedCertificate;
     }
 
     @Override
     public Optional<Certificate> getById(Long id) throws DaoException {
+        Optional<Certificate> certificate = Optional.empty();
         Optional<List<Certificate>> certificates = Optional.ofNullable(jdbcTemplate.query(GET_CERTIFICATE_BY_ID_QUERY, new CertificateExtractor(), id));
         if (!certificates.isPresent()) {
             throw new DaoException("Certificate was not found");
         }
-        if (certificates.get().isEmpty()) {
-            throw new DaoException("Certificate was not found");
+        if (!certificates.get().isEmpty()) {
+            certificate = Optional.of(certificates.get().get(0));
         }
-        return Optional.of(certificates.get().get(0));
+        return certificate;
     }
 
     @Override
@@ -135,7 +131,12 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
                 .map(Tag::getName)
                 .collect(Collectors.toList());
 
-        for (Tag tag : tags) {
+        List<Tag> validTags = tags.stream()
+                .filter(Objects::nonNull)
+                .filter(car -> car.getName() != null)
+                .collect(Collectors.toList());
+
+        for (Tag tag : validTags) {
             if (!tagsNameDB.contains(tag.getName())) {
                 jdbcTemplate.update(ADD_TAG_QUERY, tag.getName());
             }
@@ -145,6 +146,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
             }
             idsTag.add(requiredTag.get().getId());
         }
+
         return idsTag;
     }
 

@@ -26,18 +26,19 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     private CurrentDate date;
 
     @Override
-    public Certificate update(Certificate certificate, Long idCertificate) throws ResourceNotFoundException, DaoException {
+    public Optional<Certificate> update(Certificate certificate, Long idCertificate) throws DaoException, ResourceNotFoundException {
         Optional<List<Certificate>> certificates = certificateDao.getAll();
+        Optional<Certificate> updatedCertificate = Optional.empty();
         validator.validateListIsNull(certificates);
         validator.validateListIsEmpty(certificates.get());
         List<Long> certificatesId = certificates.get().stream()
                 .map(Certificate::getId)
                 .collect(Collectors.toList());
-        if (!certificatesId.contains(idCertificate)) {
-            throw new ResourceNotFoundException("Requested resource not found id = " + idCertificate);
+        if (certificatesId.contains(idCertificate)) {
+            certificate.setLastUpdateDate(date.getCurrentDate());
+            updatedCertificate = certificateDao.update(certificate, idCertificate);
         }
-        certificate.setLastUpdateDate(date.getCurrentDate());
-        return certificateDao.update(certificate, idCertificate);
+        return updatedCertificate;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     }
 
     @Override
-    public Long add(Certificate certificate) throws DaoException {
+    public Optional<Certificate> add(Certificate certificate) throws DaoException {
         certificate.setCreateDate(date.getCurrentDate());
         return certificateDao.add(certificate);
     }

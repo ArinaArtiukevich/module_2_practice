@@ -29,7 +29,7 @@ public class TagServiceImpl implements CRDService<Tag> {
     }
 
     @Override
-    public Long add(Tag tag) throws DaoException {
+    public Optional<Tag> add(Tag tag) throws DaoException {
         return tagDao.add(tag);
 
     }

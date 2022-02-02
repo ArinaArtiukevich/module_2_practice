@@ -35,8 +35,9 @@ public class TagDaoImpl implements CRDDao<Tag> {
     }
 
     @Override
-    public Long add(Tag tag) throws DaoException {
-        Optional<Long> idAddedObject = Optional.empty();
+    public Optional<Tag> add(Tag tag) throws DaoException {
+        Optional<Tag> addedTag = Optional.empty();
+        Long idAddedObject;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(ADD_TAG_QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -46,18 +47,16 @@ public class TagDaoImpl implements CRDDao<Tag> {
 
         Optional<Map<String, Object>> keys = Optional.ofNullable(keyHolder.getKeys());
         if (keys.isPresent()) {
-            idAddedObject = Optional.of((long) keys.get().get(TAG_ID));
+            idAddedObject = (long) keys.get().get(TAG_ID);
+            addedTag = getById(idAddedObject);
         }
-        if (!idAddedObject.isPresent()) {
-            throw new DaoException("Tag was not added");
-        }
-        return idAddedObject.get();
+        return addedTag;
     }
 
     @Override
     public Optional<Tag> getById(Long id) throws DaoException {
         List<Tag> tags = jdbcTemplate.query(GET_TAG_BY_ID_QUERY, new TagMapper(), id);
-        if (tags.isEmpty()){
+        if (tags.isEmpty()) {
             throw new DaoException("No tag by id = " + id);
         }
         return Optional.of(tags.get(0));

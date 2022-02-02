@@ -5,13 +5,11 @@ import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.service.CRDService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -50,13 +48,10 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addTag(@Valid @RequestBody Tag tag, BindingResult bindingResult) throws DaoException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(tagService.add(tag)).toUri().toString());
-
-        return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    public ResponseEntity<Tag> addTag(@Valid @RequestBody Tag tag, BindingResult bindingResult) throws DaoException {
+        return tagService.add(tag)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
 
     }
 

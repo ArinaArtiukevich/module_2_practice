@@ -5,6 +5,7 @@ import com.esm.epam.exception.ResourceNotFoundException;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @param <T> describes type parameter
@@ -33,9 +34,9 @@ public interface CRDService<T> {
      * adds new element
      *
      * @param t the type of element to be added
-     * @return id of added element
+     * @return element
      */
-    Long add(T t) throws DaoException;
+    Optional<T> add(T t) throws DaoException;
 
     /**
      * finds element by id
@@ -49,6 +50,7 @@ public interface CRDService<T> {
      * deletes element by id
      *
      * @param id is required element id
+     * @return true when element was deleted
      */
     boolean deleteById(Long id) throws ResourceNotFoundException;
 }

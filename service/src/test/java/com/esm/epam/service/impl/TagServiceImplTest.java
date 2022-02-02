@@ -37,6 +37,7 @@ class TagServiceImplTest {
     private Long tagId = 1L;
     private Long invalidTagId = -1L;
     private Tag tag = new Tag(tagId, "tag_snow");
+    private Tag newTag = new Tag(null, "tag_snow");
     private List<Tag> tags = Arrays.asList(
             new Tag(2L, "tag_outdoors"),
             new Tag(3L, "tag_indoors"),
@@ -57,9 +58,9 @@ class TagServiceImplTest {
 
     @Test
     public void testAdd_positive() throws DaoException {
-        when(tagDao.add(tag)).thenReturn(tagId);
-        Long actualId = tagService.add(tag);
-        assertEquals(tagId, actualId);
+        when(tagDao.add(newTag)).thenReturn(Optional.ofNullable(tag));
+        Optional<Tag> actualTag = tagService.add(newTag);
+        assertEquals(tag, actualTag.get());
     }
 
     @Test

@@ -129,9 +129,16 @@ class CertificateServiceImplTest {
 
     @Test
     public void testAdd_positive() throws DaoException {
-        when(certificateDao.add(newCertificate)).thenReturn(newId);
-        Long actualId = certificateService.add(newCertificate);
-        assertEquals(newId, actualId);
+        Certificate addedCertificate = Certificate.builder()
+                .id(newId)
+                .name("tennis")
+                .description("playing tennis")
+                .price(204)
+                .duration(30)
+                .build();
+        when(certificateDao.add(newCertificate)).thenReturn(Optional.ofNullable(addedCertificate));
+        Optional<Certificate> actualCertificate = certificateService.add(newCertificate);
+        assertEquals(addedCertificate, actualCertificate.get());
     }
 
 

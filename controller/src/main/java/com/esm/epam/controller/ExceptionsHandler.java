@@ -45,6 +45,6 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DaoException.class)
     public final ResponseEntity<ErrorResponse> handleDaoException(DaoException exception) {
         ErrorResponse errorResponse = new ErrorResponse(5, exception.getLocalizedMessage());
-        return new ResponseEntity<>(errorResponse, EXPECTATION_FAILED);
+        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 }

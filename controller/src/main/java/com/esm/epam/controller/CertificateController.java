@@ -6,14 +6,12 @@ import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.service.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -59,23 +57,23 @@ public class CertificateController {
         } else {
             responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
         return responseEntity;
     }
 
     @PostMapping
-    public ResponseEntity<String> addCertificate(@Valid @RequestBody Certificate certificate, BindingResult bindingResult) throws DaoException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(certificateService.add(certificate)).toUri().toString());
-        return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    public ResponseEntity<Certificate> addCertificate(@Valid @RequestBody Certificate certificate, BindingResult bindingResult) throws DaoException {
+        return certificateService.add(certificate)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Certificate> updateCertificate(@PathVariable("id") @Min(1L) Long id, @RequestBody Certificate certificate) throws ControllerException, ResourceNotFoundException, DaoException {
         validateIntToBeUpdated(certificate.getDuration());
         validateIntToBeUpdated(certificate.getPrice());
-        Certificate certificateUpdated = certificateService.update(certificate, id);
-        return new ResponseEntity<>(certificateUpdated, HttpStatus.OK);
+        return certificateService.update(certificate, id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 }
