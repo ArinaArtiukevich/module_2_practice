@@ -8,11 +8,17 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.esm.epam.util.ParameterAttribute.*;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_CREATE_DATE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_DESCRIPTION;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_DURATION;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_ID;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_LAST_UPDATE_DATE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_NAME;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_PRICE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TAGS_TAG_ID;
+import static com.esm.epam.util.ParameterAttribute.TAG_NAME;
 
 public class CertificateExtractor implements ResultSetExtractor<List<Certificate>> {
     @Override

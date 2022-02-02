@@ -18,7 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.esm.epam.util.ParameterAttribute.*;
+import static com.esm.epam.util.ParameterAttribute.ADD_TAG_QUERY;
+import static com.esm.epam.util.ParameterAttribute.DELETE_TAG_BY_ID_CERTIFICATES_TAG_QUERY;
+import static com.esm.epam.util.ParameterAttribute.DELETE_TAG_BY_ID_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_ALL_TAGS_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_TAG_BY_ID_QUERY;
+import static com.esm.epam.util.ParameterAttribute.TAG_ID;
+
 
 @Repository
 public class TagDaoImpl implements CRDDao<Tag> {

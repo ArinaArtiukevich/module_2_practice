@@ -18,10 +18,25 @@ import org.springframework.util.MultiValueMap;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.esm.epam.util.ParameterAttribute.*;
+import static com.esm.epam.util.ParameterAttribute.ADD_CERTIFICATE_QUERY;
+import static com.esm.epam.util.ParameterAttribute.ADD_CERTIFICATE_TAG_QUERY;
+import static com.esm.epam.util.ParameterAttribute.ADD_TAG_QUERY;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_ID;
+import static com.esm.epam.util.ParameterAttribute.DELETE_CERTIFICATE_BY_ID_CERTIFICATES_TAGS_QUERY;
+import static com.esm.epam.util.ParameterAttribute.DELETE_CERTIFICATE_BY_ID_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_ALL_CERTIFICATES_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_ALL_TAGS_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_CERTIFICATE_BY_ID_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_TAG_BY_NAME_QUERY;
+import static com.esm.epam.util.ParameterAttribute.TAG;
 
 @Repository
 public class CertificateDaoImpl implements CRUDDao<Certificate> {

@@ -1,6 +1,5 @@
 package com.esm.epam.repository.impl;
 
-import com.esm.epam.entity.Tag;
 import com.esm.epam.repository.QueryBuilder;
 import com.esm.epam.entity.Certificate;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +13,36 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.esm.epam.util.ParameterAttribute.*;
+import static com.esm.epam.util.ParameterAttribute.AND_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.ASC_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.BEGIN_GET_FILTERED_CERTIFICATE_LIST_QUERY;
+import static com.esm.epam.util.ParameterAttribute.BEGIN_UPDATE_QUERY;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATES_TAGS_TABLE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_CREATE_DATE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_DESCRIPTION;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_ID;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_LAST_UPDATE_DATE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_LAST_UPDATE_DATE_FIELD;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_NAME;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TABLE;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TAGS_CERTIFICATE_ID;
+import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TAGS_TAG_ID;
+import static com.esm.epam.util.ParameterAttribute.DATE_ASC_PARAMETER;
+import static com.esm.epam.util.ParameterAttribute.DATE_DESC_PARAMETER;
+import static com.esm.epam.util.ParameterAttribute.DESC_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.FROM_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.IN_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.LIKE_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.NAME_ASC_PARAMETER;
+import static com.esm.epam.util.ParameterAttribute.NAME_DESC_PARAMETER;
+import static com.esm.epam.util.ParameterAttribute.ORDER_BY_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.OR_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.SELECT_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.SORT_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.TAG;
+import static com.esm.epam.util.ParameterAttribute.WHERE_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.WHERE_UPDATE_QUERY;
+
 
 @Component
 @ComponentScan(basePackages = {"com.esm.epam.repository.impl"})
