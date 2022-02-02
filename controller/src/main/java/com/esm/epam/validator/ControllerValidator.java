@@ -4,7 +4,6 @@ import com.esm.epam.exception.ControllerException;
 import org.springframework.util.MultiValueMap;
 
 import static com.esm.epam.util.ParameterAttribute.SORT_KEYS;
-import static java.util.Objects.nonNull;
 
 public class ControllerValidator {
     public static void validateSortValues(MultiValueMap<String, Object> params) throws ControllerException {
@@ -14,7 +13,7 @@ public class ControllerValidator {
     }
 
     public static void validateIntToBeUpdated(Integer value) throws ControllerException {
-        if (nonNull(value)) {
+        if (value != null) {
             if (value <= 0) {
                 throw new ControllerException("Invalid integer value = " + value);
             }

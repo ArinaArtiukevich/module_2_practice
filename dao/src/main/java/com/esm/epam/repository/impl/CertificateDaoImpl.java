@@ -1,12 +1,12 @@
 package com.esm.epam.repository.impl;
 
-import com.esm.epam.exception.DaoException;
-import com.esm.epam.repository.QueryBuilder;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.extractor.CertificateExtractor;
 import com.esm.epam.mapper.TagMapper;
 import com.esm.epam.repository.CRUDDao;
+import com.esm.epam.repository.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.esm.epam.util.ParameterAttribute.*;
-import static java.util.Objects.*;
 
 @Repository
 public class CertificateDaoImpl implements CRUDDao<Certificate> {
@@ -58,7 +57,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
         List<Tag> tags = certificate.getTags();
         updateCertificateTags(idCertificate, tags);
         Optional<Certificate> updatedCertificate = getById(idCertificate);
-        if (!updatedCertificate.isPresent()){
+        if (!updatedCertificate.isPresent()) {
             throw new DaoException("Can not find updated certificate");
         }
         return updatedCertificate.get();
@@ -114,7 +113,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
     }
 
     private void updateCertificateTags(long certificate_id, List<Tag> tags) throws DaoException {
-        if (nonNull(tags)) {
+        if (tags != null) {
             if (tags.size() != 0) {
                 List<Long> idsAddedTag = getTagsId(tags);
                 addCertificateTags(certificate_id, idsAddedTag);
@@ -141,7 +140,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
                 jdbcTemplate.update(ADD_TAG_QUERY, tag.getName());
             }
             Optional<Tag> requiredTag = Optional.ofNullable(jdbcTemplate.queryForObject(GET_TAG_BY_NAME_QUERY, new TagMapper(), tag.getName()));
-            if (!requiredTag.isPresent()){
+            if (!requiredTag.isPresent()) {
                 throw new DaoException("No required tags to update certificates");
             }
             idsTag.add(requiredTag.get().getId());
