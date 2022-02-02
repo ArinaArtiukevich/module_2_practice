@@ -1,6 +1,6 @@
 package com.esm.epam.controller;
 
-import com.esm.epam.errorEntity.ErrorResponse;
+import com.esm.epam.entity.ErrorResponse;
 import com.esm.epam.exception.ControllerException;
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;

@@ -1,4 +1,4 @@
-package com.esm.epam.errorEntity;
+package com.esm.epam.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
