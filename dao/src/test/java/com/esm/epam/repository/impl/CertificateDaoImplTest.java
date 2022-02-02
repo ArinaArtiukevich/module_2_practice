@@ -4,6 +4,7 @@ package com.esm.epam.repository.impl;
 import com.esm.epam.config.HsqlConfiguration;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.repository.QueryBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,8 +50,8 @@ class CertificateDaoImplTest {
 
     @Test
     void testGetAll() {
-        List<Certificate> actualCertificates = certificateDao.getAll();
-        assertEquals(certificates, actualCertificates);
+        Optional<List<Certificate>> actualCertificates = certificateDao.getAll();
+        assertEquals(certificates, actualCertificates.get());
     }
 
     @Test
@@ -58,8 +60,8 @@ class CertificateDaoImplTest {
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("name", partName);
         List<Certificate> expectedCertificates = Arrays.asList(certificates.get(1));
-        List<Certificate> actualCertificates = certificateDao.getFilteredList(params);
-        assertEquals(expectedCertificates, actualCertificates);
+        Optional<List<Certificate>> actualCertificates = certificateDao.getFilteredList(params);
+        assertEquals(expectedCertificates, actualCertificates.get());
 
     }
 
@@ -70,8 +72,8 @@ class CertificateDaoImplTest {
         params.add("tag", tagParameter);
 
         List<Certificate> expectedCertificates = Arrays.asList(certificates.get(1));
-        List<Certificate> actualCertificates = certificateDao.getFilteredList(params);
-        assertEquals(expectedCertificates, actualCertificates);
+        Optional<List<Certificate>> actualCertificates = certificateDao.getFilteredList(params);
+        assertEquals(expectedCertificates, actualCertificates.get());
     }
 
     @Test
@@ -81,12 +83,12 @@ class CertificateDaoImplTest {
         params.add("sort", sortParameter);
 
         List<Certificate> expectedCertificates = Arrays.asList(certificates.get(1), certificates.get(0));
-        List<Certificate> actualCertificates = certificateDao.getFilteredList(params);
-        assertEquals(expectedCertificates, actualCertificates);
+        Optional<List<Certificate>> actualCertificates = certificateDao.getFilteredList(params);
+        assertEquals(expectedCertificates, actualCertificates.get());
     }
 
     @Test
-    void testUpdate() {
+    void testUpdate() throws DaoException {
         Certificate certificateWithFieldsToBeUpdated = Certificate.builder()
                 .name("snowboarding")
                 .tags(Arrays.asList(tag_relax))
@@ -104,23 +106,23 @@ class CertificateDaoImplTest {
                         .build();
 
         certificateDao.update(certificateWithFieldsToBeUpdated, 1L);
-        Certificate actualCertificate = certificateDao.getById(1L);
-        assertEquals(expectedCertificate, actualCertificate);
+        Optional<Certificate> actualCertificate = certificateDao.getById(1L);
+        assertEquals(expectedCertificate, actualCertificate.get());
     }
 
     @Test
-    void testGetById() {
+    void testGetById() throws DaoException {
         Certificate expectedCertificate = certificates.get(0);
-        Certificate actualCertificate = certificateDao.getById(1L);
-        assertEquals(expectedCertificate, actualCertificate);
+        Optional<Certificate> actualCertificate = certificateDao.getById(1L);
+        assertEquals(expectedCertificate, actualCertificate.get());
     }
 
     @Test
     void testDeleteById() {
         boolean isDeleted = certificateDao.deleteById(1L);
         certificates.remove(0);
-        List<Certificate> actualCertificates = certificateDao.getAll();
+        Optional<List<Certificate>> actualCertificates = certificateDao.getAll();
         assertTrue(isDeleted);
-        assertEquals(certificates, actualCertificates);
+        assertEquals(certificates, actualCertificates.get());
     }
 }

@@ -1,8 +1,8 @@
 package com.esm.epam.service.impl;
 
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.impl.TagDaoImpl;
 import com.esm.epam.validator.impl.ServiceTagValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +15,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(locations = "classpath:testSpringDispetcher-servlet.xml")
 @ExtendWith(SpringExtension.class)
@@ -50,27 +50,27 @@ class TagServiceImplTest {
 
     @Test
     public void testGetAll_positive() throws ResourceNotFoundException {
-        when(tagDao.getAll()).thenReturn(tags);
+        when(tagDao.getAll()).thenReturn(Optional.ofNullable(tags));
         List<Tag> actualTags = tagService.getAll();
         assertEquals(tags, actualTags);
     }
 
     @Test
-    public void testAdd_positive() throws ServiceException {
+    public void testAdd_positive() throws DaoException {
         when(tagDao.add(tag)).thenReturn(tagId);
         Long actualId = tagService.add(tag);
         assertEquals(tagId, actualId);
     }
 
     @Test
-    public void testGetById_positive() throws ResourceNotFoundException {
-        when(tagDao.getById(1L)).thenReturn(tag);
+    public void testGetById_positive() throws ResourceNotFoundException, DaoException {
+        when(tagDao.getById(1L)).thenReturn(Optional.ofNullable(tag));
         Tag actualTag = tagService.getById(1L);
         assertEquals(tag, actualTag);
     }
 
     @Test
-    public void testDeleteById_positive() throws ServiceException {
+    public void testDeleteById_positive() throws ResourceNotFoundException {
         when(tagDao.deleteById(2L)).thenReturn(true);
         tagService.deleteById(tags.get(0).getId());
         Mockito.verify(tagDao).deleteById(tags.get(0).getId());
@@ -78,16 +78,16 @@ class TagServiceImplTest {
 
     @Test
     public void testDeleteById_serviceException() {
-        ServiceException serviceException = new ServiceException("Requested resource not found id = " + invalidTagId);
+        ResourceNotFoundException resourceNotFoundException = new ResourceNotFoundException("Requested resource not found id = " + invalidTagId);
         when(tagDao.deleteById(invalidTagId)).thenReturn(false);
         Boolean actualResult = tagDao.deleteById(tagId);
-        ServiceException actual = null;
+        ResourceNotFoundException actual = null;
         try {
             tagService.deleteById(invalidTagId);
-        } catch (ServiceException e) {
+        } catch (ResourceNotFoundException e) {
             actual = e;
         }
-        assertEquals(serviceException.getMessage(), actual.getMessage());
+        assertEquals(resourceNotFoundException.getMessage(), actual.getMessage());
         assertEquals(false, actualResult);
 
     }

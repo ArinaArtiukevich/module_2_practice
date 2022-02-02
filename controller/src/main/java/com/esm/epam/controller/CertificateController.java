@@ -2,6 +2,7 @@ package com.esm.epam.controller;
 
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.exception.ControllerException;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import com.esm.epam.service.CRUDService;
@@ -45,20 +46,20 @@ public class CertificateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Certificate> getCertificate(@PathVariable("id") @Min(1L) Long id) throws ResourceNotFoundException {
+    public ResponseEntity<Certificate> getCertificate(@PathVariable("id") @Min(1L) Long id) throws ResourceNotFoundException, DaoException {
         Certificate certificate = certificateService.getById(id);
         return new ResponseEntity<>(certificate, HttpStatus.OK);
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCertificate(@PathVariable("id") @Min(1L) Long id) throws ServiceException {
+    public ResponseEntity<Void> deleteCertificate(@PathVariable("id") @Min(1L) Long id) throws ServiceException, ResourceNotFoundException {
         certificateService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<String> addCertificate(@Valid @RequestBody Certificate certificate, BindingResult bindingResult) {
+    public ResponseEntity<String> addCertificate(@Valid @RequestBody Certificate certificate, BindingResult bindingResult) throws ServiceException, DaoException {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -67,7 +68,7 @@ public class CertificateController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Certificate> updateCertificate(@PathVariable("id") @Min(1L) Long id, @RequestBody Certificate certificate) throws ServiceException, ControllerException {
+    public ResponseEntity<Certificate> updateCertificate(@PathVariable("id") @Min(1L) Long id, @RequestBody Certificate certificate) throws ServiceException, ControllerException, ResourceNotFoundException, DaoException {
         validateIntToBeUpdated(certificate.getDuration());
         validateIntToBeUpdated(certificate.getPrice());
         Certificate certificateUpdated = certificateService.update(certificate, id);

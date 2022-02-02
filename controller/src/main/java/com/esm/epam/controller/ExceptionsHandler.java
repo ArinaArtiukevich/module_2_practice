@@ -2,6 +2,7 @@ package com.esm.epam.controller;
 
 import com.esm.epam.errorEntity.ErrorResponse;
 import com.esm.epam.exception.ControllerException;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import org.springframework.dao.DuplicateKeyException;
@@ -37,15 +38,20 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public final ResponseEntity<ErrorResponse> handleControllerException(ConstraintViolationException exception) {
+    public final ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception) {
         ErrorResponse errorResponse = new ErrorResponse(4, exception.getMessage());
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(ControllerException.class)
-    public final ResponseEntity<ErrorResponse> handleServiceException(ControllerException exception) {
+    public final ResponseEntity<ErrorResponse> handleControllerException(ControllerException exception) {
         ErrorResponse errorResponse = new ErrorResponse(5, exception.getLocalizedMessage());
         return new ResponseEntity<>(errorResponse, NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(DaoException.class)
+    public final ResponseEntity<ErrorResponse> handleDaoException(DaoException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(6, exception.getLocalizedMessage());
+        return new ResponseEntity<>(errorResponse, EXPECTATION_FAILED);
+    }
 }

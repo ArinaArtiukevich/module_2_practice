@@ -1,6 +1,7 @@
 package com.esm.epam.controller;
 
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import com.esm.epam.service.CRDService;
@@ -32,20 +33,20 @@ public class TagController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tag> getTag(@PathVariable("id") @Min(1L) Long id) throws ResourceNotFoundException {
+    public ResponseEntity<Tag> getTag(@PathVariable("id") @Min(1L) Long id) throws ResourceNotFoundException, DaoException {
         Tag tag = tagService.getById(id);
         return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable("id") @Min(1L) Long id) throws ServiceException {
+    public ResponseEntity<Void> deleteTag(@PathVariable("id") @Min(1L) Long id) throws ServiceException, ResourceNotFoundException {
         tagService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
     @PostMapping
-    public ResponseEntity<String> addTag(@Valid @RequestBody Tag tag, BindingResult bindingResult) throws ServiceException {
+    public ResponseEntity<String> addTag(@Valid @RequestBody Tag tag, BindingResult bindingResult) throws ServiceException, DaoException {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Location", ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

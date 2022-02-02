@@ -1,5 +1,6 @@
 package com.esm.epam.repository.impl;
 
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.repository.QueryBuilder;
 import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
@@ -17,9 +18,7 @@ import org.springframework.util.MultiValueMap;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.esm.epam.util.ParameterAttribute.*;
@@ -38,33 +37,37 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
     }
 
     @Override
-    public List<Certificate> getAll() {
-        return jdbcTemplate.query(GET_ALL_CERTIFICATES_QUERY, new CertificateExtractor());
+    public Optional<List<Certificate>> getAll() {
+        return Optional.ofNullable(jdbcTemplate.query(GET_ALL_CERTIFICATES_QUERY, new CertificateExtractor()));
     }
 
     @Override
-    public List<Certificate> getFilteredList(MultiValueMap<String, Object> params) {
-        if (params.keySet().contains(TAG)) {
+    public Optional<List<Certificate>> getFilteredList(MultiValueMap<String, Object> params) {
+        if (params.containsKey(TAG)) {
             params.replace(TAG, Collections.singletonList(jdbcTemplate.queryForObject(GET_TAG_BY_NAME_QUERY, new TagMapper(), params.get(TAG).get(0)).getId()));
         }
         String filteredListQuery = queryBuilder.getFilteredList(params);
-        return jdbcTemplate.query(filteredListQuery, new CertificateExtractor());
+        return Optional.ofNullable(jdbcTemplate.query(filteredListQuery, new CertificateExtractor()));
     }
 
     @Override
-    public Certificate update(Certificate certificate, Long idCertificate) {
+    public Certificate update(Certificate certificate, Long idCertificate) throws DaoException {
         String updateCertificateQuery = queryBuilder.getUpdateQuery(certificate, idCertificate);
         jdbcTemplate.update(updateCertificateQuery);
 
         List<Tag> tags = certificate.getTags();
         updateCertificateTags(idCertificate, tags);
-        return getById(idCertificate);
+        Optional<Certificate> updatedCertificate = getById(idCertificate);
+        if (!updatedCertificate.isPresent()){
+            throw new DaoException("Can not find updated certificate");
+        }
+        return updatedCertificate.get();
     }
 
     @Override
-    public Long add(Certificate certificate) {
+    public Long add(Certificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        final long certificate_id;
+        Optional<Long> idAddedObject = Optional.empty();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(ADD_CERTIFICATE_QUERY, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, certificate.getName());
@@ -74,22 +77,29 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
             ps.setInt(5, certificate.getPrice());
             return ps;
         }, keyHolder);
-        certificate_id = (long) keyHolder.getKeys().get(CERTIFICATE_ID);
+
+        Optional<Map<String, Object>> keys = Optional.ofNullable(keyHolder.getKeys());
+        if (keys.isPresent()) {
+            idAddedObject = Optional.of((long) keys.get().get(CERTIFICATE_ID));
+        } else {
+            throw new DaoException("Certificate was not added");
+        }
+        Long idCertificate = idAddedObject.get();
         List<Tag> tags = certificate.getTags();
-        updateCertificateTags(certificate_id, tags);
-        return certificate_id;
+        updateCertificateTags(idCertificate, tags);
+        return idCertificate;
     }
 
     @Override
-    public Certificate getById(Long id) {
-        List<Certificate> certificates = jdbcTemplate.query(GET_CERTIFICATE_BY_ID_QUERY, new CertificateExtractor(), id);
-        Certificate certificate = null;
-        if (nonNull(certificates)) {
-            if (!certificates.isEmpty()) {
-                certificate = certificates.get(0);
-            }
+    public Optional<Certificate> getById(Long id) throws DaoException {
+        Optional<List<Certificate>> certificates = Optional.ofNullable(jdbcTemplate.query(GET_CERTIFICATE_BY_ID_QUERY, new CertificateExtractor(), id));
+        if (!certificates.isPresent()) {
+            throw new DaoException("Certificate was not found");
         }
-        return certificate;
+        if (certificates.get().isEmpty()) {
+            throw new DaoException("Certificate was not found");
+        }
+        return Optional.of(certificates.get().get(0));
     }
 
     @Override
@@ -103,7 +113,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
         return isDeleted;
     }
 
-    private void updateCertificateTags(long certificate_id, List<Tag> tags) {
+    private void updateCertificateTags(long certificate_id, List<Tag> tags) throws DaoException {
         if (nonNull(tags)) {
             if (tags.size() != 0) {
                 List<Long> idsAddedTag = getTagsId(tags);
@@ -118,7 +128,7 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
         }
     }
 
-    private List<Long> getTagsId(List<Tag> tags) {
+    private List<Long> getTagsId(List<Tag> tags) throws DaoException {
         List<Long> idsTag = new ArrayList<>();
 
         List<Tag> tagsDB = jdbcTemplate.query(GET_ALL_TAGS_QUERY, new TagMapper());
@@ -130,7 +140,11 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
             if (!tagsNameDB.contains(tag.getName())) {
                 jdbcTemplate.update(ADD_TAG_QUERY, tag.getName());
             }
-            idsTag.add(jdbcTemplate.queryForObject(GET_TAG_BY_NAME_QUERY, new TagMapper(), tag.getName()).getId());
+            Optional<Tag> requiredTag = Optional.ofNullable(jdbcTemplate.queryForObject(GET_TAG_BY_NAME_QUERY, new TagMapper(), tag.getName()));
+            if (!requiredTag.isPresent()){
+                throw new DaoException("No required tags to update certificates");
+            }
+            idsTag.add(requiredTag.get().getId());
         }
         return idsTag;
     }

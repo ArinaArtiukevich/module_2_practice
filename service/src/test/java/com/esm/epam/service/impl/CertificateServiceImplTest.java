@@ -1,6 +1,7 @@
 package com.esm.epam.service.impl;
 
 import com.esm.epam.entity.Certificate;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.impl.CertificateDaoImpl;
@@ -23,10 +24,10 @@ import org.springframework.util.MultiValueMap;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(locations = "classpath:testSpringDispetcher-servlet.xml")
 @ExtendWith(SpringExtension.class)
@@ -95,7 +96,7 @@ class CertificateServiceImplTest {
 
 
     @Test
-    void testUpdate_positive() throws ServiceException {
+    void testUpdate_positive() throws DaoException, ResourceNotFoundException {
         Certificate expectedCertificate = Certificate.builder().id(1L)
                 .name("football")
                 .description("playing football")
@@ -109,25 +110,25 @@ class CertificateServiceImplTest {
                 return null;
             }
         }).when(certificateDao).update(certificateWithFieldsToBeUpdated, 1L);
-        when(certificateDao.getById(1L)).thenReturn(certificate);
-        when(certificateDao.getAll()).thenReturn(Arrays.asList(certificate));
+        when(certificateDao.getById(1L)).thenReturn(Optional.ofNullable(certificate));
+        when(certificateDao.getAll()).thenReturn(Optional.of(Arrays.asList(certificate)));
 
         certificateService.update(certificateWithFieldsToBeUpdated, 1L);
-        Certificate actualCertificate = certificateDao.getById(1L);
+        Optional<Certificate> actualCertificate = certificateDao.getById(1L);
 
-        assertEquals(expectedCertificate, actualCertificate);
+        assertEquals(expectedCertificate, actualCertificate.get());
     }
 
     @Test
     void testGetAll_positive() throws ResourceNotFoundException {
-        when(certificateDao.getAll()).thenReturn(certificates);
+        when(certificateDao.getAll()).thenReturn(Optional.ofNullable(certificates));
         List<Certificate> actualCertificates = certificateService.getAll();
         assertEquals(certificates, actualCertificates);
     }
 
 
     @Test
-    public void testAdd_positive() throws ServiceException {
+    public void testAdd_positive() throws ServiceException, DaoException {
         when(certificateDao.add(newCertificate)).thenReturn(newId);
         Long actualId = certificateService.add(newCertificate);
         assertEquals(newId, actualId);
@@ -135,8 +136,8 @@ class CertificateServiceImplTest {
 
 
     @Test
-    public void testGetById_positive() throws ResourceNotFoundException {
-        when(certificateDao.getById(1L)).thenReturn(certificate);
+    public void testGetById_positive() throws ResourceNotFoundException, DaoException {
+        when(certificateDao.getById(1L)).thenReturn(Optional.ofNullable(certificate));
         Certificate actualCertificate = certificateService.getById(1L);
         assertEquals(certificate, actualCertificate);
     }
@@ -171,12 +172,14 @@ class CertificateServiceImplTest {
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("name", partName);
         List<Certificate> list = new LinkedList<>(certificates);
-        doAnswer(new Answer<List<Certificate>>() {
-            public List<Certificate> answer(InvocationOnMock invocation) {
+
+        doAnswer(new Answer<Optional<List<Certificate>>>() {
+            public Optional<List<Certificate>> answer(InvocationOnMock invocation) {
                 list.removeIf(e -> !e.getName().contains(partName));
-                return list;
+                return Optional.of(list);
             }
         }).when(certificateDao).getFilteredList(params);
+
 
         List<Certificate> actualCertificates = certificateService.getFilteredList(params);
         assertEquals(list, actualCertificates);

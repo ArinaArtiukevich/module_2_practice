@@ -1,8 +1,7 @@
 package com.esm.epam.repository.impl;
 
-import com.esm.epam.entity.Certificate;
 import com.esm.epam.entity.Tag;
-import com.esm.epam.extractor.CertificateExtractor;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.mapper.TagMapper;
 import com.esm.epam.repository.CRDDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,10 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.esm.epam.util.ParameterAttribute.*;
-import static java.util.Objects.nonNull;
 
 @Repository
 public class TagDaoImpl implements CRDDao<Tag> {
@@ -30,12 +30,13 @@ public class TagDaoImpl implements CRDDao<Tag> {
     }
 
     @Override
-    public List<Tag> getAll() {
-        return jdbcTemplate.query(GET_ALL_TAGS_QUERY, new TagMapper());
+    public Optional<List<Tag>> getAll() {
+        return Optional.of(jdbcTemplate.query(GET_ALL_TAGS_QUERY, new TagMapper()));
     }
 
     @Override
-    public Long add(Tag tag) {
+    public Long add(Tag tag) throws DaoException {
+        Optional<Long> idAddedObject = Optional.empty();
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(ADD_TAG_QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -43,17 +44,23 @@ public class TagDaoImpl implements CRDDao<Tag> {
             return ps;
         }, keyHolder);
 
-        return (long) keyHolder.getKeys().get(TAG_ID);
+        Optional<Map<String, Object>> keys = Optional.ofNullable(keyHolder.getKeys());
+        if (keys.isPresent()) {
+            idAddedObject = Optional.of((long) keys.get().get(TAG_ID));
+        }
+        if (!idAddedObject.isPresent()) {
+            throw new DaoException("Tag was not added");
+        }
+        return idAddedObject.get();
     }
 
     @Override
-    public Tag getById(Long id) {
+    public Optional<Tag> getById(Long id) throws DaoException {
         List<Tag> tags = jdbcTemplate.query(GET_TAG_BY_ID_QUERY, new TagMapper(), id);
-        Tag tag = null;
-        if (!tags.isEmpty()) {
-            tag = tags.get(0);
+        if (tags.isEmpty()){
+            throw new DaoException("No tag by id = " + id);
         }
-        return tag;
+        return Optional.of(tags.get(0));
     }
 
     @Override

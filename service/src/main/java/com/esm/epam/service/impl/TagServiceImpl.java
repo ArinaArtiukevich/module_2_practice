@@ -1,8 +1,8 @@
 package com.esm.epam.service.impl;
 
 import com.esm.epam.entity.Tag;
+import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
-import com.esm.epam.exception.ServiceException;
 import com.esm.epam.repository.CRDDao;
 import com.esm.epam.service.CRDService;
 import com.esm.epam.validator.ServiceValidator;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TagServiceImpl implements CRDService<Tag> {
@@ -21,27 +22,29 @@ public class TagServiceImpl implements CRDService<Tag> {
 
     @Override
     public List<Tag> getAll() throws ResourceNotFoundException {
-        List<Tag> tags = tagDao.getAll();
-        validator.validateList(tags);
-        return tags;
+        Optional<List<Tag>> tags = tagDao.getAll();
+        validator.validateListIsNull(tags);
+        validator.validateListIsEmpty(tags.get());
+        return tags.get();
     }
 
     @Override
-    public Long add(Tag tag) {
+    public Long add(Tag tag) throws DaoException {
         return tagDao.add(tag);
+
     }
 
     @Override
-    public Tag getById(Long id) throws ResourceNotFoundException {
-        Tag tag = tagDao.getById(id);
+    public Tag getById(Long id) throws ResourceNotFoundException, DaoException {
+        Optional<Tag> tag = tagDao.getById(id);
         validator.validateEntity(tag, id);
-        return tag;
+        return tag.get();
     }
 
     @Override
-    public void deleteById(Long id) throws ServiceException {
+    public void deleteById(Long id) throws ResourceNotFoundException {
         if (!tagDao.deleteById(id)) {
-            throw new ServiceException("Requested resource not found id = " + id);
+            throw new ResourceNotFoundException("Requested resource not found id = " + id);
         }
     }
 }
