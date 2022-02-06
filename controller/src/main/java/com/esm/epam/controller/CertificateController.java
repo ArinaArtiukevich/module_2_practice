@@ -61,6 +61,13 @@ public class CertificateController {
     }
 
 
+    @DeleteMapping("/{id}/tags/{tag_id}")
+    public ResponseEntity<Certificate> deleteCertificate(@PathVariable("id") @Min(1L) Long id, @PathVariable("tag_id") @Min(1L) Long idTag) throws ResourceNotFoundException, DaoException {
+        return certificateService.deleteTag(id, idTag)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCertificate(@PathVariable("id") @Min(1L) Long id) throws ResourceNotFoundException {
         ResponseEntity<Void> responseEntity;
@@ -72,6 +79,7 @@ public class CertificateController {
 
         return responseEntity;
     }
+
 
     @PostMapping
     public ResponseEntity<Certificate> addCertificate(@Valid @RequestBody Certificate certificate, BindingResult bindingResult) throws DaoException {

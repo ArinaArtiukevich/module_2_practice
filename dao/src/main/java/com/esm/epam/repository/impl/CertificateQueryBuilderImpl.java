@@ -175,15 +175,14 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
 
         mapFields.values().removeIf(Objects::isNull);
         mapFields.values().removeIf(values -> values instanceof List);
-        if (mapFields.keySet().contains(CERTIFICATE_LAST_UPDATE_DATE_FIELD)) {
+        if (mapFields.containsKey(CERTIFICATE_LAST_UPDATE_DATE_FIELD)) {
             mapFields.put(CERTIFICATE_LAST_UPDATE_DATE, mapFields.remove(CERTIFICATE_LAST_UPDATE_DATE_FIELD));
         }
-        Map<String, Object> result = mapFields.entrySet()
+        return mapFields.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         e -> getStringWithQuotes(e.getValue())));
-        return result;
     }
 
     private Object getStringWithQuotes(Object object) {

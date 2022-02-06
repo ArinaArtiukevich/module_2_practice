@@ -73,5 +73,8 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
         return certificates.get();
     }
 
-
+    @Override
+    public Optional<Certificate> deleteTag(Long id, Long idTag) throws DaoException {
+        return certificateDao.deleteTag(id, idTag);
+    }
 }

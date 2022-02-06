@@ -48,6 +48,8 @@ public class ParameterAttribute {
             "VALUES (?, ?, ?, ?, ?)";
     public final static String ADD_CERTIFICATE_TAG_QUERY = "INSERT INTO certificates_tags(certificate_id, tag_id) VALUES (?,?)";
     public final static String GET_TAG_BY_NAME_QUERY = "SELECT * FROM tags WHERE tags.tag_name = ?";
+    public final static String DELETE_TAG_BY_TAG_ID_AND_CERTIFICATE_ID_QUERY = "DELETE FROM certificates_tags\n" +
+            "    WHERE (certificates_tags.certificate_id = ?) AND (certificates_tags.tag_id = ?);\n";
 
     public final static String GET_ALL_TAGS_QUERY = "SELECT * FROM tags";
     public final static String GET_TAG_BY_ID_QUERY = "SELECT * FROM tags WHERE tags.tag_id = ?";

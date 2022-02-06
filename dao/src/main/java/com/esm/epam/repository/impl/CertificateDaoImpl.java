@@ -32,6 +32,7 @@ import static com.esm.epam.util.ParameterAttribute.ADD_TAG_QUERY;
 import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_ID;
 import static com.esm.epam.util.ParameterAttribute.DELETE_CERTIFICATE_BY_ID_CERTIFICATES_TAGS_QUERY;
 import static com.esm.epam.util.ParameterAttribute.DELETE_CERTIFICATE_BY_ID_QUERY;
+import static com.esm.epam.util.ParameterAttribute.DELETE_TAG_BY_TAG_ID_AND_CERTIFICATE_ID_QUERY;
 import static com.esm.epam.util.ParameterAttribute.GET_ALL_CERTIFICATES_QUERY;
 import static com.esm.epam.util.ParameterAttribute.GET_ALL_TAGS_QUERY;
 import static com.esm.epam.util.ParameterAttribute.GET_CERTIFICATE_BY_ID_QUERY;
@@ -122,6 +123,16 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
             isDeleted = true;
         }
         return isDeleted;
+    }
+
+    @Override
+    public Optional<Certificate> deleteTag(Long id, Long idTag) throws DaoException {
+        Optional<Certificate> certificate = Optional.empty();
+        int affectedRows = jdbcTemplate.update(DELETE_TAG_BY_TAG_ID_AND_CERTIFICATE_ID_QUERY, id, idTag);
+        if (affectedRows > 0) {
+            certificate = getById(id);
+        }
+        return certificate;
     }
 
     private void updateCertificateTags(long certificateId, List<Tag> tags) throws DaoException {
