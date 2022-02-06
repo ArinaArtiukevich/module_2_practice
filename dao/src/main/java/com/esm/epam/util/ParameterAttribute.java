@@ -36,6 +36,9 @@ public class ParameterAttribute {
             "LEFT JOIN certificates_tags ON (gift_certificates.id=certificates_tags.certificate_id) \n" +
             "LEFT JOIN tags ON(tags.tag_id = certificates_tags.tag_id)\n" +
             "WHERE gift_certificates.id = ?\n";
+
+    public final static String GET_CERTIFICATE_TAGS = "SELECT certificates_tags.tag_id FROM certificates_tags WHERE certificates_tags.certificate_id = ?\n";
+
     public final static String DELETE_CERTIFICATE_BY_ID_CERTIFICATES_TAGS_QUERY = "DELETE FROM certificates_tags\n" +
             "    WHERE certificates_tags.certificate_id = ?;\n";
     public final static String DELETE_CERTIFICATE_BY_ID_QUERY =

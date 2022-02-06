@@ -1,10 +1,12 @@
 package com.esm.epam.controller;
 
 import com.esm.epam.entity.Certificate;
+import com.esm.epam.entity.View;
 import com.esm.epam.exception.ControllerException;
 import com.esm.epam.exception.DaoException;
 import com.esm.epam.exception.ResourceNotFoundException;
 import com.esm.epam.service.CRUDService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,7 @@ public class CertificateController {
     public CRUDService<Certificate> certificateService;
 
     @GetMapping
+    @JsonView(View.UI.class)
     public ResponseEntity<List<Certificate>> getCertificateList(@RequestParam(required = false) MultiValueMap<String, Object> params) throws ResourceNotFoundException, ControllerException {
         List<Certificate> certificates = new ArrayList<>();
         if (params.size() == 0) {
@@ -51,6 +54,7 @@ public class CertificateController {
     }
 
     @GetMapping("/{id}")
+    @JsonView(View.UI.class)
     public ResponseEntity<Certificate> getCertificate(@PathVariable("id") @Min(1L) Long id) throws ResourceNotFoundException, DaoException {
         Certificate certificate = certificateService.getById(id);
         return new ResponseEntity<>(certificate, HttpStatus.OK);

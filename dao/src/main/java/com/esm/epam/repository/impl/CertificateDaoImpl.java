@@ -35,6 +35,7 @@ import static com.esm.epam.util.ParameterAttribute.DELETE_CERTIFICATE_BY_ID_QUER
 import static com.esm.epam.util.ParameterAttribute.GET_ALL_CERTIFICATES_QUERY;
 import static com.esm.epam.util.ParameterAttribute.GET_ALL_TAGS_QUERY;
 import static com.esm.epam.util.ParameterAttribute.GET_CERTIFICATE_BY_ID_QUERY;
+import static com.esm.epam.util.ParameterAttribute.GET_CERTIFICATE_TAGS;
 import static com.esm.epam.util.ParameterAttribute.GET_TAG_BY_NAME_QUERY;
 import static com.esm.epam.util.ParameterAttribute.TAG;
 
@@ -123,22 +124,23 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
         return isDeleted;
     }
 
-    private void updateCertificateTags(long certificate_id, List<Tag> tags) throws DaoException {
+    private void updateCertificateTags(long certificateId, List<Tag> tags) throws DaoException {
         if (tags != null) {
             if (tags.size() != 0) {
-                List<Long> idsAddedTag = getTagsId(tags);
-                addCertificateTags(certificate_id, idsAddedTag);
+                List<Long> idsAddedTag = getTagsId(tags, certificateId);
+                addCertificateTags(certificateId, idsAddedTag);
             }
         }
     }
 
     private void addCertificateTags(long certificate_id, List<Long> idsAddedTag) {
+
         for (Long idTag : idsAddedTag) {
             jdbcTemplate.update(ADD_CERTIFICATE_TAG_QUERY, certificate_id, idTag);
         }
     }
 
-    private List<Long> getTagsId(List<Tag> tags) throws DaoException {
+    private List<Long> getTagsId(List<Tag> tags, long certificateId) throws DaoException {
         List<Long> idsTag = new ArrayList<>();
 
         List<Tag> tagsDB = jdbcTemplate.query(GET_ALL_TAGS_QUERY, new TagMapper());
@@ -151,6 +153,12 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
                 .filter(car -> car.getName() != null)
                 .collect(Collectors.toList());
 
+        List<Long> certificateTagsId = jdbcTemplate.queryForList(GET_CERTIFICATE_TAGS, Long.class, certificateId);
+
+        return getRequiredTags(idsTag, tagsNameDB, validTags, certificateTagsId);
+    }
+
+    private List<Long> getRequiredTags(List<Long> idsTag, List<String> tagsNameDB, List<Tag> validTags, List<Long> certificateTagsId) throws DaoException {
         for (Tag tag : validTags) {
             if (!tagsNameDB.contains(tag.getName())) {
                 jdbcTemplate.update(ADD_TAG_QUERY, tag.getName());
@@ -159,10 +167,15 @@ public class CertificateDaoImpl implements CRUDDao<Certificate> {
             if (!requiredTag.isPresent()) {
                 throw new DaoException("No required tags to update certificates");
             }
-            idsTag.add(requiredTag.get().getId());
+
+            if (!certificateTagsId.contains(requiredTag.get().getId())) {
+                idsTag.add(requiredTag.get().getId());
+            }
         }
 
-        return idsTag;
+        return idsTag.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
 }
