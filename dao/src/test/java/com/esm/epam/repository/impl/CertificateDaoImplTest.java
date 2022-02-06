@@ -78,7 +78,7 @@ class CertificateDaoImplTest {
 
     @Test
     void testGetFilteredList_sortByNameAsc() {
-        String sortParameter = "name_asc";
+        String sortParameter = "name";
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("sort", sortParameter);
 

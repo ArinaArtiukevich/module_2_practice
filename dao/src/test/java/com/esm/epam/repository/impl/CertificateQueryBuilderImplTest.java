@@ -30,7 +30,8 @@ class CertificateQueryBuilderImplTest {
         params.add("name", "sn");
         params.add("desc", "sc");
         params.add("tag", "tag_winter");
-        params.add("sort", "name_asc");
+        params.add("sort", "name");
+        params.add("direction", "asc");
         String expectedQuery = "SELECT * FROM gift_certificates \n" +
                 "LEFT JOIN certificates_tags ON (gift_certificates.id=certificates_tags.certificate_id) \n" +
                 "LEFT JOIN tags ON (tags.tag_id = certificates_tags.tag_id) WHERE  ( gift_certificates.name LIKE '%sn%' )  AND  ( gift_certificates.id IN ( SELECT certificates_tags.certificate_id FROM certificates_tags WHERE certificates_tags.tag_id = tag_winter ))  ORDER BY gift_certificates.name ASC";
