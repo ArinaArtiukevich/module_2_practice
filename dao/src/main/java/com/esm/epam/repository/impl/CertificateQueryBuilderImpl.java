@@ -1,7 +1,7 @@
 package com.esm.epam.repository.impl;
 
-import com.esm.epam.repository.QueryBuilder;
 import com.esm.epam.entity.Certificate;
+import com.esm.epam.repository.QueryBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +11,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.esm.epam.util.ParameterAttribute.AND_STATEMENT;
@@ -27,14 +28,13 @@ import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_NAME;
 import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TABLE;
 import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TAGS_CERTIFICATE_ID;
 import static com.esm.epam.util.ParameterAttribute.CERTIFICATE_TAGS_TAG_ID;
-import static com.esm.epam.util.ParameterAttribute.DATE_ASC_PARAMETER;
-import static com.esm.epam.util.ParameterAttribute.DATE_DESC_PARAMETER;
+import static com.esm.epam.util.ParameterAttribute.DATE_PARAMETER;
 import static com.esm.epam.util.ParameterAttribute.DESC_STATEMENT;
+import static com.esm.epam.util.ParameterAttribute.DIRECTION_PARAMETER;
 import static com.esm.epam.util.ParameterAttribute.FROM_STATEMENT;
 import static com.esm.epam.util.ParameterAttribute.IN_STATEMENT;
 import static com.esm.epam.util.ParameterAttribute.LIKE_STATEMENT;
-import static com.esm.epam.util.ParameterAttribute.NAME_ASC_PARAMETER;
-import static com.esm.epam.util.ParameterAttribute.NAME_DESC_PARAMETER;
+import static com.esm.epam.util.ParameterAttribute.NAME_PARAMETER;
 import static com.esm.epam.util.ParameterAttribute.ORDER_BY_STATEMENT;
 import static com.esm.epam.util.ParameterAttribute.OR_STATEMENT;
 import static com.esm.epam.util.ParameterAttribute.SELECT_STATEMENT;
@@ -67,6 +67,7 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
         String query = BEGIN_GET_FILTERED_CERTIFICATE_LIST_QUERY;
         String whereQuery = "";
         String orderByQuery = "";
+        String direction = getDirection(params);
         for (Map.Entry<String, List<Object>> entry : params.entrySet()) {
             switch (entry.getKey()) {
                 case TAG:
@@ -79,7 +80,7 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
                     whereQuery = getWhereStatementByValue(whereQuery, entry, CERTIFICATE_DESCRIPTION);
                     break;
                 case SORT_STATEMENT:
-                    orderByQuery = getOrderByStatement(orderByQuery, entry);
+                    orderByQuery = getOrderByStatement(orderByQuery, entry, direction);
                     break;
             }
         }
@@ -91,20 +92,28 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
         return query;
     }
 
-    private String getOrderByStatement(String orderByQuery, Map.Entry<String, List<Object>> entry) {
+    private String getDirection(MultiValueMap<String, Object> params) {
+        Optional<List<Object>> directionParameter = params.entrySet().stream()
+                .filter(e -> e.getKey().equals(DIRECTION_PARAMETER))
+                .map(Map.Entry::getValue)
+                .findFirst();
+        return directionParameter.isPresent() ? directionParameter.get().toString() : ASC_STATEMENT;
+    }
+
+    private String getOrderByStatement(String orderByQuery, Map.Entry<String, List<Object>> entry, String directionParameter) {
+        String direction;
+        if (directionParameter.toUpperCase().contains(DESC_STATEMENT)) {
+            direction = DESC_STATEMENT;
+        } else {
+            direction = ASC_STATEMENT;
+        }
         for (int i = 0; i < entry.getValue().size(); i++) {
             switch (entry.getValue().get(i).toString()) {
-                case NAME_ASC_PARAMETER:
-                    orderByQuery = getOrderByStatementByValue(orderByQuery, entry, CERTIFICATE_NAME, ASC_STATEMENT);
+                case NAME_PARAMETER:
+                    orderByQuery = getOrderByStatementByValue(orderByQuery, CERTIFICATE_NAME, direction);
                     return orderByQuery;
-                case NAME_DESC_PARAMETER:
-                    orderByQuery = getOrderByStatementByValue(orderByQuery, entry, CERTIFICATE_NAME, DESC_STATEMENT);
-                    break;
-                case DATE_ASC_PARAMETER:
-                    orderByQuery = getOrderByStatementByValue(orderByQuery, entry, CERTIFICATE_CREATE_DATE, ASC_STATEMENT);
-                    break;
-                case DATE_DESC_PARAMETER:
-                    orderByQuery = getOrderByStatementByValue(orderByQuery, entry, CERTIFICATE_CREATE_DATE, DESC_STATEMENT);
+                case DATE_PARAMETER:
+                    orderByQuery = getOrderByStatementByValue(orderByQuery, CERTIFICATE_CREATE_DATE, direction);
                     break;
             }
             if (i != entry.getValue().size() - 1) {
@@ -114,7 +123,7 @@ public class CertificateQueryBuilderImpl implements QueryBuilder<Certificate> {
         return orderByQuery;
     }
 
-    private String getOrderByStatementByValue(String orderByQuery, Map.Entry<String, List<Object>> entry, String value, String direction) {
+    private String getOrderByStatementByValue(String orderByQuery, String value, String direction) {
         orderByQuery = prepareOrderStatement(orderByQuery);
         orderByQuery = orderByQuery + CERTIFICATE_TABLE + "." + value + " " + direction;
         return orderByQuery;

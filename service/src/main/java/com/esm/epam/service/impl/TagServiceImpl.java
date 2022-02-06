@@ -24,7 +24,6 @@ public class TagServiceImpl implements CRDService<Tag> {
     public List<Tag> getAll() throws ResourceNotFoundException {
         Optional<List<Tag>> tags = tagDao.getAll();
         validator.validateListIsNull(tags);
-        validator.validateListIsEmpty(tags.get());
         return tags.get();
     }
 

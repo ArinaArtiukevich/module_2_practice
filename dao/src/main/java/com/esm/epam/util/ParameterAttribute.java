@@ -60,10 +60,9 @@ public class ParameterAttribute {
             "LEFT JOIN tags ON (tags.tag_id = certificates_tags.tag_id)";
     public final static String ORDER_BY_STATEMENT = " ORDER BY ";
 
-    public final static String NAME_ASC_PARAMETER = "name_asc";
-    public final static String NAME_DESC_PARAMETER = "name_desc";
-    public final static String DATE_ASC_PARAMETER = "date_asc";
-    public final static String DATE_DESC_PARAMETER = "date_desc";
+    public final static String NAME_PARAMETER = "name";
+    public final static String DATE_PARAMETER = "date";
+    public final static String DIRECTION_PARAMETER = "direction";
 
     public final static String SORT_STATEMENT = "sort";
     public final static String WHERE_STATEMENT = " WHERE ";
@@ -75,4 +74,5 @@ public class ParameterAttribute {
     public final static String IN_STATEMENT = " IN ";
     public final static String ASC_STATEMENT = "ASC";
     public final static String DESC_STATEMENT = "DESC";
+
 }

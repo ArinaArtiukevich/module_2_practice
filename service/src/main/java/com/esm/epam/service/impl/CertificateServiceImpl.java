@@ -45,7 +45,6 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     public List<Certificate> getAll() throws ResourceNotFoundException {
         Optional<List<Certificate>> certificates = certificateDao.getAll();
         validator.validateListIsNull(certificates);
-        validator.validateListIsEmpty(certificates.get());
         return certificates.get();
     }
 
@@ -71,7 +70,6 @@ public class CertificateServiceImpl implements CRUDService<Certificate> {
     public List<Certificate> getFilteredList(MultiValueMap<String, Object> params) throws ResourceNotFoundException {
         Optional<List<Certificate>> certificates = certificateDao.getFilteredList(params);
         validator.validateListIsNull(certificates);
-        validator.validateListIsEmpty(certificates.get());
         return certificates.get();
     }
 
